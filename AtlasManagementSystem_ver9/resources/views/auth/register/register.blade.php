@@ -4,13 +4,13 @@
       <div class="w-25 vh-75 border p-3" style="background-color:white;">
         <div class="register_form">
           <div class="d-flex mt-3" style="justify-content:space-between">
-            <div class="last_name" style="width:140px">
+            <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">姓</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 over_name" name="over_name">
               </div>
             </div>
-            <div class="first_name" style="width:140px">
+            <div class="" style="width:140px">
               <label class=" d-block m-0" style="font-size:13px">名</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 under_name" name="under_name">
@@ -18,13 +18,13 @@
             </div>
           </div>
           <div class="d-flex mt-3" style="justify-content:space-between">
-            <div class="last_name_kana" style="width:140px">
+            <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">セイ</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 over_name_kana" name="over_name_kana">
               </div>
             </div>
-            <div class="first_name_kana" style="width:140px">
+            <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">メイ</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 under_name_kana" name="under_name_kana">
@@ -38,13 +38,16 @@
             </div>
           </div>
         </div>
-        <div class="mt-3">
-          <input type="radio" name="sex" class="sex" value="1">
-          <label style="font-size:13px">男性</label>
-          <input type="radio" name="sex" class="sex" value="2">
-          <label style="font-size:13px">女性</label>
-          <input type="radio" name="sex" class="sex" value="3">
-          <label style="font-size:13px">その他</label>
+        <div class="mt-3 text-center">
+          <label style="font-size:13px; margin-right:20px;">
+            <input type="radio" name="sex" class="sex" value="1"> 男性
+          </label>
+          <label style="font-size:13px; margin-right:20px;">
+            <input type="radio" name="sex" class="sex" value="2"> 女性
+          </label>
+          <label style="font-size:13px;">
+            <input type="radio" name="sex" class="sex" value="3"> その他
+          </label>
         </div>
         <div class="mt-3">
           <label class="d-block m-0 aa" style="font-size:13px">生年月日</label>
