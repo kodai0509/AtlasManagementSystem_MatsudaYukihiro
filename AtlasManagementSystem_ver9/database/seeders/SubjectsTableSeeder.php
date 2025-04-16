@@ -16,6 +16,8 @@ class SubjectsTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('subjects')->truncate();
+
         // 国語、数学、英語を追加
         DB::table('subjects')->insert([
             [

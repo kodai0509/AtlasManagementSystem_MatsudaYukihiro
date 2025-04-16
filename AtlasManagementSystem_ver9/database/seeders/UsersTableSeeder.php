@@ -38,7 +38,7 @@ class UsersTableSeeder extends Seeder
                 'sex' => 2,
                 'birth_day' => '1992-02-02',
                 'role' => 2, // 一般ユーザー
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password456'),
                 'created_at' => Carbon::now(),
             ],
             [
@@ -50,7 +50,7 @@ class UsersTableSeeder extends Seeder
                 'sex' => 1,
                 'birth_day' => '1995-03-03',
                 'role' => 2, // 一般ユーザー
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password678'),
                 'created_at' => Carbon::now(),
             ],
         ]);

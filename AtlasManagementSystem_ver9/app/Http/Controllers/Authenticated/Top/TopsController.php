@@ -8,11 +8,14 @@ use Auth;
 
 class TopsController extends Controller
 {
-    public function show(){
+    public function show()
+    {
         return view('authenticated.top.top');
+        dd(Auth::check());
     }
 
-    public function logout(){
+    public function logout()
+    {
         Auth::logout();
         return redirect('/login');
     }
