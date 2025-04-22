@@ -7,6 +7,7 @@ use App\Http\Controllers\Authenticated\Calendar\Admin\CalendarsController;
 use App\Http\Controllers\Authenticated\Calendar\General\CalendarController;
 use App\Http\Controllers\Authenticated\Top\TopsController;
 use App\Http\Controllers\Authenticated\Users\UsersController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 
 /*
@@ -22,9 +23,13 @@ use App\Http\Controllers\Authenticated\Users\UsersController;
 
 require __DIR__ . '/auth.php';
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('loginPost');
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+// ログイン画面のルート
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
+// routes/web.php
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('loginPost');
+// routes/web.php
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('registerView');
+
 
 
 Route::group(['middleware' => 'auth'], function () {

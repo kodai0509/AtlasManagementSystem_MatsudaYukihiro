@@ -3,49 +3,61 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use DB;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 use App\Models\Users\Subjects;
 use App\Models\Users\User;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
         $subjects = Subjects::all();
         return view('auth.register.register', compact('subjects'));
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try{
-            $old_year = $request->old_year;
-            $old_month = $request->old_month;
-            $old_day = $request->old_day;
-            $data = $old_year . '-' . $old_month . '-' . $old_day;
-            $birth_day = date('Y-m-d', strtotime($data));
-            $subjects = $request->subject;
+        // バリデーションルール
+        $validated = $request->validate([
+            'over_name' => ['required', 'string', 'max:10'],
+            'under_name' => ['required', 'string', 'max:10'],
+            'over_name_kana' => ['required', 'string', 'regex:/^[ァ-ヶー]+$/u', 'max:30'],
+            'under_name_kana' => ['required', 'string', 'regex:/^[ァ-ヶー]+$/u', 'max:30'],
+            'mail_address' => ['required', 'string', 'email', 'max:100', 'unique:users,mail_address'],
+            'sex' => ['required', Rule::in([1, 2, 3])],
+            'old_year' => ['required', 'integer', 'min:1900', 'max:' . Carbon::now()->year],
+            'old_month' => ['required', 'integer', 'min:1', 'max:12'],
+            'old_day' => ['required', 'integer', 'min:1', 'max:31'],
+            'role' => ['required', Rule::in([1, 2, 3, 4])],
+            'password' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
+        ], [
+            'old_year.min' => '生年月日の年は1900年以降で入力してください。',
+            'old_year.max' => '生年月日の年は現在の年を超えることはできません。',
+            'old_month.min' => '月は1から12の間で入力してください。',
+            'old_day.min' => '日付は1から31の間で入力してください。',
+            'password.confirmed' => 'パスワード確認が一致しません。',
+        ]);
 
+        // 日付チェック
+        if (!checkdate($request->old_month, $request->old_day, $request->old_year)) {
+            return back()->withErrors(['birth_day' => '正しい日付を入力してください。'])->withInput();
+        }
+
+        $birth_day = Carbon::createFromDate($request->old_year, $request->old_month, $request->old_day);
+        $min_date = Carbon::create(2000, 1, 1);
+        $max_date = Carbon::today();
+
+        if ($birth_day->lt($min_date) || $birth_day->gt($max_date)) {
+            return back()->withErrors(['birth_day' => '生年月日は2000年1月1日から今日までの間で入力してください。'])->withInput();
+        }
+
+        // ユーザー作成
+        DB::beginTransaction();
+        try {
             $user_get = User::create([
                 'over_name' => $request->over_name,
                 'under_name' => $request->under_name,
@@ -57,15 +69,23 @@ class RegisteredUserController extends Controller
                 'role' => $request->role,
                 'password' => bcrypt($request->password)
             ]);
-            if($request->role == 4){
+
+            dd($request->subject);
+
+            if ($request->role == 4) {
                 $user = User::findOrFail($user_get->id);
-                $user->subjects()->attach($subjects);
+
+                // 重複を排除して科目を関連付ける
+                $user->subjects()->sync($request->subject);
             }
+
+            Auth::login($user_get);
             DB::commit();
-            return view('auth.login.login');
-        }catch(\Exception $e){
+
+            return redirect()->route('login')->with('flash_message', '登録が完了しました。ログインしてください。');
+        } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('loginView');
+            return redirect()->route('loginView')->withErrors(['error' => '登録中にエラーが発生しました。']);
         }
     }
 }

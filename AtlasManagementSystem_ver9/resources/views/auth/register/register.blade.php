@@ -1,17 +1,24 @@
 <x-guest-layout>
   <form action="{{ route('registerPost') }}" method="POST" style="padding-top: 100px;padding-bottom: 100px; background-color:#ECF1F6;">
+    {{ csrf_field() }}
     <div class="w-100 vh-100 d-flex" style="align-items:center; justify-content:center;">
       <div class="w-25 vh-75 border p-3" style="background-color:white;">
         <div class="register_form">
           <div class="d-flex mt-3" style="justify-content:space-between">
             <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">姓</label>
+              @if ($errors->has('over_name'))
+              <div class="text-danger" style="font-size:12px;">{{ $errors->first('over_name') }}</div>
+              @endif
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 over_name" name="over_name">
               </div>
             </div>
             <div class="" style="width:140px">
               <label class=" d-block m-0" style="font-size:13px">名</label>
+              @if ($errors->has('under_name'))
+              <div class="text-danger" style="font-size:12px;">{{ $errors->first('under_name') }}</div>
+              @endif
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 under_name" name="under_name">
               </div>
@@ -20,12 +27,18 @@
           <div class="d-flex mt-3" style="justify-content:space-between">
             <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">セイ</label>
+              @if ($errors->has('over_name_kana'))
+              <div class="text-danger" style="font-size:12px;">{{ $errors->first('over_name_kana') }}</div>
+              @endif
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 over_name_kana" name="over_name_kana">
               </div>
             </div>
             <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">メイ</label>
+              @if ($errors->has('under_name_kana'))
+              <div class="text-danger" style="font-size:12px;">{{ $errors->first('under_name_kana') }}</div>
+              @endif
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 under_name_kana" name="under_name_kana">
               </div>
@@ -33,8 +46,11 @@
           </div>
           <div class="mt-3">
             <label class="m-0 d-block" style="font-size:13px">メールアドレス</label>
+            @if ($errors->has('mail_address'))
+            <div class="text-danger" style="font-size:12px;">{{ $errors->first('mail_address') }}</div>
+            @endif
             <div class="border-bottom border-primary">
-              <input type="mail" class="w-100 border-0 mail_address" name="mail_address">
+              <input type="email" class="w-100 border-0 mail_address" name="mail_address">
             </div>
           </div>
         </div>
@@ -166,13 +182,12 @@
           </div>
         </div>
         <div class="mt-5 text-right">
-          <input type="submit" class="btn btn-primary register_btn" disabled value="新規登録" onclick="return confirm('登録してよろしいですか？')">
+          <input type="submit" class="btn btn-primary register_btn" value="新規登録" onclick="return confirm('登録してよろしいですか？')">
         </div>
-        <div class="text-center">
+        <!-- <div class="text-center"　必要なかったら完全削除>
           <a href="{{ route('loginView') }}">ログイン</a>
-        </div>
+        </div> -->
       </div>
-      {{ csrf_field() }}
     </div>
   </form>
   </div>
