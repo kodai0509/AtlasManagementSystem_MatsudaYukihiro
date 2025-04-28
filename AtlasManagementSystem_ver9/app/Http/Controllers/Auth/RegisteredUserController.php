@@ -29,17 +29,24 @@ class RegisteredUserController extends Controller
             'under_name_kana' => ['required', 'string', 'regex:/^[ァ-ヶー]+$/u', 'max:30'],
             'mail_address' => ['required', 'string', 'email', 'max:100', 'unique:users,mail_address'],
             'sex' => ['required', Rule::in([1, 2, 3])],
-            'old_year' => ['required', 'integer', 'min:1900', 'max:' . Carbon::now()->year],
+            'old_year' => ['required', 'integer', 'min:2000', 'max:' . Carbon::now()->year],
             'old_month' => ['required', 'integer', 'min:1', 'max:12'],
             'old_day' => ['required', 'integer', 'min:1', 'max:31'],
             'role' => ['required', Rule::in([1, 2, 3, 4])],
             'password' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
         ], [
-            'old_year.min' => '生年月日の年は1900年以降で入力してください。',
-            'old_year.max' => '生年月日の年は現在の年を超えることはできません。',
-            'old_month.min' => '月は1から12の間で入力してください。',
-            'old_day.min' => '日付は1から31の間で入力してください。',
-            'password.confirmed' => 'パスワード確認が一致しません。',
+            'over_name' => ['required' => '入力必須です。', 'max:10' => '10文字以下で入力してください。'],
+            'under_name' => ['required' => '入力必須です。', 'max:10' => '10文字以下で入力してください。'],
+            'over_name_kana' => ['required' => '入力必須です。', 'regex:/^[ァ-ヶー]+$/u' => 'カタカナで入力してください', 'max:30' => '30文字以下で入力してください。'],
+            'under_name_kana' => ['required' => '入力必須です。', 'regex:/^[ァ-ヶー]+$/u' => 'カタカナで入力してください', 'max:30' => '30文字以下で入力してください。'],
+            'mail_address' => ['required' => '入力必須です。', 'email' => 'メール形式で入力してください。', 'max:100' => '100文字以下で入力してください。', 'unique:users,mail_address' => '登録済みのメールアドレスです'],
+            'sex' => ['required' => '入力必須です。'],
+            'old_year.min' => ['required' => '入力必須です。'],
+            'old_year.max' => ['required' => '入力必須です。'],
+            'old_month.min' => ['required' => '入力必須です。', 'min:1', 'max:12' => '月は1から12の間で入力してください。'],
+            'old_day.min' => ['required' => '入力必須です。', 'min:1', 'max:30' => '日付は1から31の間で入力してください。'],
+            'password' => ['required' => '入力必須です。', 'min=' > '8文字以上で入力してください。', 'max' => ' 30文字以下で入力してください。 '],
+            'password.confirmed' => ['パスワード確認が一致しません。'],
         ]);
 
         // 日付チェック
@@ -70,13 +77,13 @@ class RegisteredUserController extends Controller
                 'password' => bcrypt($request->password)
             ]);
 
-            dd($request->subject);
-
             if ($request->role == 4) {
-                $user = User::findOrFail($user_get->id);
+                // 重複している科目を取り除くために配列をユニークにする
+                $uniqueSubjects = array_unique($request->subject);
 
-                // 重複を排除して科目を関連付ける
-                $user->subjects()->sync($request->subject);
+                // ユーザーと科目を関連付け
+                $user = User::findOrFail($user_get->id);
+                $user->subjects()->sync($uniqueSubjects);
             }
 
             Auth::login($user_get);

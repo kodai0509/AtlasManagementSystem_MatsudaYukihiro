@@ -23,7 +23,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 require __DIR__ . '/auth.php';
 
-// ログイン画面のルート
+// ログイン画面へ遷移
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
 // routes/web.php
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('loginPost');
