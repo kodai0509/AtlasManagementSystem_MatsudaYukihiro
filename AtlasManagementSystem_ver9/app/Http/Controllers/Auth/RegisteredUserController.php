@@ -29,9 +29,9 @@ class RegisteredUserController extends Controller
             'under_name_kana' => ['required', 'string', 'regex:/^[ァ-ヶー]+$/u', 'max:30'],
             'mail_address' => ['required', 'string', 'email', 'max:100', 'unique:users,mail_address'],
             'sex' => ['required', Rule::in([1, 2, 3])],
-            'old_year' => ['required', 'integer', 'min:2000', 'max:' . Carbon::now()->year],
-            'old_month' => ['required', 'integer', 'min:1', 'max:12'],
-            'old_day' => ['required', 'integer', 'min:1', 'max:31'],
+            'old_year' => ['required', 'integer', 'min:2000', 'max:' . Carbon::now()->year, 'not_in:none'],
+            'old_month' => ['required', 'integer', 'min:1', 'max:12', 'not_in:none'],
+            'old_day' => ['required', 'integer', 'min:1', 'max:31', 'not_in:none'],
             'role' => ['required', Rule::in([1, 2, 3, 4])],
             'password' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
         ], [
@@ -59,6 +59,9 @@ class RegisteredUserController extends Controller
             'old_day.required' => '入力必須です。',
             'old_day.min' => '日付は1以上で入力してください。',
             'old_day.max' => '日付は31以下で入力してください。',
+            'old_year.not_in' => '年を選択してください。',
+            'old_month.not_in' => '月を選択してください。',
+            'old_day.not_in' => '日を選択してください。',
             'role.required' => '入力必須です。',
             'password.required' => '入力必須です。',
             'password.min' => '8文字以上で入力してください。',
@@ -67,8 +70,14 @@ class RegisteredUserController extends Controller
         ]);
 
         // 日付チェック
-        if (!checkdate($request->old_month, $request->old_day, $request->old_year)) {
-            return back()->withErrors(['birth_day' => '正しい日付を入力してください。'])->withInput();
+        $year = (int)$request->input('old_year');
+        $month = (int)$request->input('old_month');
+        $day = (int)$request->input('old_day');
+
+        if (!checkdate($month, $day, $year)) {
+            return back()
+                ->withErrors(['old_day' => '存在しない日付です。'])
+                ->withInput();
         }
 
         $birth_day = Carbon::createFromDate($request->old_year, $request->old_month, $request->old_day);

@@ -203,9 +203,9 @@
           <button type="submit" class="btn btn-primary register_btn" onclick="return confirm('登録してよろしいですか？')">新規登録
           </button>
         </div>
-        <!-- <div class="text-center"　必要なかったら完全削除>
+        <div class="text-center">
           <a href="{{ route('loginView') }}">ログイン</a>
-        </div> -->
+        </div>
       </div>
     </div>
   </form>
