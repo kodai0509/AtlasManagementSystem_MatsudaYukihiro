@@ -39,7 +39,7 @@ li {
 
 /* サイドバー */
 .sidebar {
-    width: 150px;
+    width: 200px; /* 少し拡大*/
     height: 100vh;
     background-color: #03aad2;
     font-weight: bold;
@@ -47,6 +47,10 @@ li {
 
 .main-container {
     width: 100%;
+}
+
+.sidebar a {
+    white-space: nowrap;
 }
 
 .sidebar p a {
