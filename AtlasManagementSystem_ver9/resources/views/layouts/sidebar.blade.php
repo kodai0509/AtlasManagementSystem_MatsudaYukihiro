@@ -32,12 +32,16 @@
             <p>
                 <a href="{{ route('calendar.general.show',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/edit_13918806.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">スクール予約</a>
             </p>
+            @auth
+            @if (Auth::user()->role === 1)
             <p>
                 <a href="{{ route('calendar.admin.show',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/calendar_3421957.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">スクール予約確認</a>
             </p>
             <p>
                 <a href="{{ route('calendar.admin.setting',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/attention_17401437.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">スクール枠登録</a>
             </p>
+            @endif
+            @endauth
             <p><a href="{{ route('post.show') }}"><img src="{{ asset('image/home_6500368.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">掲示板</a>
             </p>
             <p><a href="{{ route('user.show') }}"><img src="{{ asset('image/users_17445949.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">ユーザー検索</a>
