@@ -2,7 +2,7 @@
   <form action="{{ route('registerPost') }}" method="POST" style="padding-top: 100px;padding-bottom: 100px; background-color:#ECF1F6;">
     {{ csrf_field() }}
     <div class="w-100 vh-100 d-flex" style="align-items:center; justify-content:center;">
-      <div class="w-25 vh-75 border p-3" style="background-color:white;">
+      <div class="w-25 vh-75 border p-3" style="background-color:white; position: relative;">
         <div class="register_form">
           <div class="d-flex mt-3" style="justify-content:space-between">
             <div class="" style="width:140px">
@@ -24,6 +24,7 @@
               </div>
             </div>
           </div>
+
           <div class="d-flex mt-3" style="justify-content:space-between">
             <div class="" style="width:140px">
               @error('over_name_kana')
@@ -44,6 +45,7 @@
               </div>
             </div>
           </div>
+
           <div class="mt-3">
             <label class="m-0 d-block" style="font-size:13px">メールアドレス</label>
             <div class="border-bottom border-primary">
@@ -54,6 +56,7 @@
             </div>
           </div>
         </div>
+
         <div class="mt-3 text-center">
           <label style="font-size:13px; margin-right:20px;">
             @error('sex')
@@ -68,99 +71,47 @@
             <input type="radio" name="sex" class="sex" value="3"> その他
           </label>
         </div>
-        <div class="mt-3">
+
+        <div class="mt-3" style="position: relative;">
+          <label class="d-block m-0" style="font-size:13px">生年月日</label>
+          <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 5px;">
+            <select class="old_year" name="old_year" style="min-width: 90px;">
+              <option value="none">-----</option>
+              @for ($y = 2000; $y <= 2025; $y++)
+                <option value="{{ $y }}">{{ $y }}</option>
+                @endfor
+            </select>
+            <label style="font-size:13px">年</label>
+
+            <select class="old_month" name="old_month" style="min-width: 60px;">
+              <option value="none">--</option>
+              @for ($m = 1; $m <= 12; $m++)
+                <option value="{{ $m }}">{{ $m }}</option>
+                @endfor
+            </select>
+            <label style="font-size:13px">月</label>
+
+            <select class="old_day" name="old_day" style="min-width: 60px;">
+              <option value="none">--</option>
+              @for ($d = 1; $d <= 31; $d++)
+                <option value="{{ $d }}">{{ $d }}</option>
+                @endfor
+            </select>
+            <label style="font-size:13px">日</label>
+          </div>
+
+          <!-- エラーメッセージ  -->
           @error('old_year')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
           @enderror
-          <label class="d-block m-0 aa" style="font-size:13px">生年月日</label>
-          <select class="old_year" name="old_year">
-            <option value="none">-----</option>
-            <option value="1985">1985</option>
-            <option value="1986">1986</option>
-            <option value="1987">1987</option>
-            <option value="1988">1988</option>
-            <option value="1989">1989</option>
-            <option value="1990">1990</option>
-            <option value="1991">1991</option>
-            <option value="1992">1992</option>
-            <option value="1993">1993</option>
-            <option value="1994">1994</option>
-            <option value="1995">1995</option>
-            <option value="1996">1996</option>
-            <option value="1997">1997</option>
-            <option value="1998">1998</option>
-            <option value="1999">1999</option>
-            <option value="2000">2000</option>
-            <option value="2001">2001</option>
-            <option value="2002">2002</option>
-            <option value="2003">2003</option>
-            <option value="2004">2004</option>
-            <option value="2005">2005</option>
-            <option value="2006">2006</option>
-            <option value="2007">2007</option>
-            <option value="2008">2008</option>
-            <option value="2009">2009</option>
-            <option value="2010">2010</option>
-          </select>
-          <label style="font-size:13px">年</label>
           @error('old_month')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
           @enderror
-          <select class="old_month" name="old_month">
-            <option value="none">-----</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-          </select>
           @error('old_day')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
           @enderror
-          <label style="font-size:13px">月</label>
-          <select class="old_day" name="old_day">
-            <option value="none">-----</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-          </select>
-          <label style="font-size:13px">日</label>
         </div>
+
         <div class="mt-3">
           <label class="d-block m-0" style="font-size:13px">役職</label>
           <input type="radio" name="role" class="admin_role role" value="1">
@@ -172,6 +123,7 @@
           <input type="radio" name="role" class="other_role role" value="4">
           <label style="font-size:13px" class="other_role">生徒</label>
         </div>
+
         <div class="select_teacher d-none">
           <label class="d-block m-0" style="font-size:13px">選択科目</label>
           @foreach($subjects as $subject)
@@ -181,6 +133,7 @@
           </div>
           @endforeach
         </div>
+
         <div class="mt-3">
           @error('password')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
@@ -190,6 +143,7 @@
             <input type="password" class="border-0 w-100 password" name="password">
           </div>
         </div>
+
         <div class="mt-3">
           @error('password_confirmation')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
@@ -199,17 +153,11 @@
             <input type="password" class="border-0 w-100 password_confirmation" name="password_confirmation">
           </div>
         </div>
+
         <div class="mt-5 text-right">
-          <button type="submit" class="btn btn-primary register_btn" onclick="return confirm('登録してよろしいですか？')">新規登録
-          </button>
-        </div>
-        <div class="text-center">
-          <a href="{{ route('loginView') }}">ログイン</a>
+          <button type="submit" class="btn btn-primary">新規登録</button>
         </div>
       </div>
     </div>
   </form>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="{{ asset('js/register.js') }}" rel="stylesheet"></script>
 </x-guest-layout>
