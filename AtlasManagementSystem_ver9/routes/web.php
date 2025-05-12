@@ -25,10 +25,9 @@ require __DIR__ . '/auth.php';
 
 // ログイン画面へ遷移
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
-// routes/web.php
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('loginPost');
-// routes/web.php
-Route::get('/register', [RegisteredUserController::class, 'create'])->name('registerView');
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
+
 
 
 
