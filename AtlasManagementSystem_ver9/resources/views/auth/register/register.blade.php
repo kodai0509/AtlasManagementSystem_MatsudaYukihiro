@@ -157,6 +157,9 @@
         <div class="mt-5 text-right">
           <button type="submit" class="btn btn-primary">新規登録</button>
         </div>
+        <div class="text-center">
+          <a href="{{ route('loginView') }}">ログイン</a>
+        </div>
       </div>
     </div>
   </form>
