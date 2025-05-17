@@ -21,6 +21,13 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
+        // 日本語メッセージにするため
+        $request->merge([
+            'old_year' => $request->old_year === 'none' ? null : $request->old_year,
+            'old_month' => $request->old_month === 'none' ? null : $request->old_month,
+            'old_day' => $request->old_day === 'none' ? null : $request->old_day,
+        ]);
+
         // バリデーションルール
         $validated = $request->validate([
             'over_name' => ['required', 'string', 'max:10'],

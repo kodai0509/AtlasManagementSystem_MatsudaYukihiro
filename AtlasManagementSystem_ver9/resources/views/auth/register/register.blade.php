@@ -74,42 +74,55 @@
 
         <div class="mt-3" style="position: relative;">
           <label class="d-block m-0" style="font-size:13px">生年月日</label>
-          <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 5px;">
-            <select class="old_year" name="old_year" style="min-width: 90px;">
-              <option value="none">-----</option>
-              @for ($y = 2000; $y <= 2025; $y++)
-                <option value="{{ $y }}">{{ $y }}</option>
-                @endfor
-            </select>
-            <label style="font-size:13px">年</label>
+          <div style="display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 10px;">
+            {{-- 年 --}}
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <select class="old_year" name="old_year" style="min-width: 90px;">
+                  <option value="none">-----</option>
+                  @for ($y = 2000; $y <= 2025; $y++)
+                    <option value="{{ $y }}">{{ $y }}</option>
+                    @endfor
+                </select>
+                <span style="font-size:13px;">年</span>
+              </div>
+              @error('old_year')
+              <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
+              @enderror
+            </div>
 
-            <select class="old_month" name="old_month" style="min-width: 60px;">
-              <option value="none">--</option>
-              @for ($m = 1; $m <= 12; $m++)
-                <option value="{{ $m }}">{{ $m }}</option>
-                @endfor
-            </select>
-            <label style="font-size:13px">月</label>
+            {{-- 月 --}}
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <select class="old_month" name="old_month" style="min-width: 60px;">
+                  <option value="none">--</option>
+                  @for ($m = 1; $m <= 12; $m++)
+                    <option value="{{ $m }}">{{ $m }}</option>
+                    @endfor
+                </select>
+                <span style="font-size:13px;">月</span>
+              </div>
+              @error('old_month')
+              <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
+              @enderror
+            </div>
 
-            <select class="old_day" name="old_day" style="min-width: 60px;">
-              <option value="none">--</option>
-              @for ($d = 1; $d <= 31; $d++)
-                <option value="{{ $d }}">{{ $d }}</option>
-                @endfor
-            </select>
-            <label style="font-size:13px">日</label>
+            {{-- 日 --}}
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <select class="old_day" name="old_day" style="min-width: 60px;">
+                  <option value="none">--</option>
+                  @for ($d = 1; $d <= 31; $d++)
+                    <option value="{{ $d }}">{{ $d }}</option>
+                    @endfor
+                </select>
+                <span style="font-size:13px;">日</span>
+              </div>
+              @error('old_day')
+              <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
+              @enderror
+            </div>
           </div>
-
-          <!-- エラーメッセージ  -->
-          @error('old_year')
-          <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
-          @enderror
-          @error('old_month')
-          <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
-          @enderror
-          @error('old_day')
-          <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
-          @enderror
         </div>
 
         <div class="mt-3">

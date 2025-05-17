@@ -9,6 +9,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "laravel-lang/lang": "^14.7",
+        "laravel-lang/publisher": "^14.7",
         "laravel/framework": "^9.0",
         "laravel/tinker": "^2.7"
     },
