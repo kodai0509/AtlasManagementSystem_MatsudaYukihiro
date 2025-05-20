@@ -26,9 +26,6 @@ require __DIR__ . '/auth.php';
 // ログイン画面へ遷移
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('loginPost');
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('loginView');
-
-
 
 
 Route::group(['middleware' => 'auth'], function () {
