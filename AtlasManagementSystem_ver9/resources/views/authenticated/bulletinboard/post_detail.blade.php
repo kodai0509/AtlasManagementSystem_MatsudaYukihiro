@@ -45,17 +45,19 @@
           <div class="mt-3 detsail_post">{{ $post->post }}</div>
         </div>
         <div class="p-3">
-          <div class="comment_container">
-            <span class="">コメント</span>
-            @foreach($post->postComments as $comment)
-            <div class="comment_area border-top">
-              <p>
-                <span>{{ $comment->commentUser($comment->user_id)->over_name }}</span>
-                <span>{{ $comment->commentUser($comment->user_id)->under_name }}</span>さん
-              </p>
-              <p>{{ $comment->comment }}</p>
+          <div class="p-3">
+            <div class="comment_container">
+              <span class="">コメント ({{ $post->postComments->count() }}件)</span>
+              @foreach($post->postComments as $comment)
+              <div class="comment_area border-top">
+                <p>
+                  <span>{{ $comment->commentUser($comment->user_id)->over_name }}</span>
+                  <span>{{ $comment->commentUser($comment->user_id)->under_name }}</span>さん
+                </p>
+                <p>{{ $comment->comment }}</p>
+              </div>
+              @endforeach
             </div>
-            @endforeach
           </div>
         </div>
       </div>
@@ -64,6 +66,14 @@
       <div class="comment_container border m-5">
         <div class="comment_area p-3">
           <p class="m-0">コメントする</p>
+          <!-- バリデーションエラー -->
+          @if ($errors->has('comment'))
+          <div class="alert alert-danger">
+            @foreach ($errors->get('comment') as $message)
+            <p>{{ $message }}</p>
+            @endforeach
+          </div>
+          @endif
           <textarea class="w-100" name="comment" form="commentRequest"></textarea>
           <input type="hidden" name="post_id" form="commentRequest" value="{{ $post->id }}">
           <input type="submit" class="btn btn-primary" form="commentRequest" value="投稿">

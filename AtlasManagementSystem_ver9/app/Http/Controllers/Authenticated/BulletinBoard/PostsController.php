@@ -96,6 +96,11 @@ class PostsController extends Controller
 
     public function commentCreate(Request $request)
     {
+        // バリデーション
+        $request->validate([
+            'comment' => 'required|string|max:250',
+        ]);
+
         PostComment::create([
             'post_id' => $request->post_id,
             'user_id' => Auth::id(),
