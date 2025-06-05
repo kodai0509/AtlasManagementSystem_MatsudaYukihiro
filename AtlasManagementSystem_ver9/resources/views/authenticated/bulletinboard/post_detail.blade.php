@@ -8,8 +8,14 @@
             </div>
             <div>
               @if (Auth::id() === $post->user_id)
-              <span class="btn btn-primary edit-modal-open" post_title="{{ $post->post_title }}" post_body="{{ $post->post }}" post_id="{{ $post->id }}">編集</span>
-              <button class="btn btn-danger delete-modal-open" data-post-id="{{ $post->id }}">削除</button>
+              <button type="button" class="btn btn-primary edit-modal-open"
+                data-post-title="{{ $post->post_title }}"
+                data-post-body="{{ $post->post }}"
+                data-post-id="{{ $post->id }}">
+                編集
+              </button>
+              <button class="btn btn-danger delete-modal-open" data-post-id="{{ $post->id }}"
+                data-delete-url="{{ route('posts.delete', $post->id) }}">削除</button>
               @endif
             </div>
             <!-- 削除モーダル -->
