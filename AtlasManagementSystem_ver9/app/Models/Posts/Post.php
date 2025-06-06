@@ -13,6 +13,7 @@ class Post extends Model
         'user_id',
         'post_title',
         'post',
+        'sub_category_id'
     ];
 
     public function user()
@@ -38,7 +39,7 @@ class Post extends Model
     // いいね数
     public function likes()
     {
-        return $this->hasMany(\App\Models\Posts\Like::class, 'like_post_id');
+        return $this->hasMany(Like::class, 'like_post_id');
     }
 
     public function likeCount()

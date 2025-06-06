@@ -4,12 +4,18 @@ $(function () {
         $(".category_num" + category_id).slideToggle();
     });
 
+    // いいね
     $(document).on("click", ".like_btn", function (e) {
         e.preventDefault();
-        $(this).addClass("un_like_btn").removeClass("like_btn");
-        var post_id = $(this).attr("post_id");
+
+        var $btn = $(this);
+        if ($btn.prop("disabled")) return;
+        $btn.prop("disabled", true);
+        $btn.addClass("un_like_btn").removeClass("like_btn");
+        var post_id = $btn.attr("post_id");
         var count = $(".like_counts" + post_id).text();
         var countInt = Number(count);
+
         $.ajax({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -24,13 +30,23 @@ $(function () {
             })
             .fail(function () {
                 console.log("fail");
+                $btn.removeClass("un_like_btn").addClass("like_btn");
+            })
+            .always(function () {
+                $btn.prop("disabled", false);
             });
     });
 
+    // いいね解除
     $(document).on("click", ".un_like_btn", function (e) {
         e.preventDefault();
-        $(this).removeClass("un_like_btn").addClass("like_btn");
-        var post_id = $(this).attr("post_id");
+
+        var $btn = $(this);
+        if ($btn.prop("disabled")) return;
+        $btn.prop("disabled", true);
+
+        $btn.removeClass("un_like_btn").addClass("like_btn");
+        var post_id = $btn.attr("post_id");
         var count = $(".like_counts" + post_id).text();
         var countInt = Number(count);
 
@@ -43,9 +59,14 @@ $(function () {
             data: { post_id: post_id },
         })
             .done(function () {
-                $(".like_counts" + post_id).text(countInt - 1);
+                $(".like_counts" + post_id).text(Math.max(countInt - 1, 0)); // 0未満防止
             })
-            .fail(function () {});
+            .fail(function () {
+                $btn.removeClass("like_btn").addClass("un_like_btn");
+            })
+            .always(function () {
+                $btn.prop("disabled", false);
+            });
     });
 
     $(".edit-modal-open").on("click", function () {

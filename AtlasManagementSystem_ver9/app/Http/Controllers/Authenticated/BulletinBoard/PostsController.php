@@ -15,88 +15,116 @@ use Auth;
 
 class PostsController extends Controller
 {
+    /* 投稿一覧*/
     public function show(Request $request)
     {
-        $posts = Post::with('user', 'postComments')->get();
-        $categories = MainCategory::get();
-        $like = new Like;
-        $post_comment = new Post;
-        if (!empty($request->keyword)) {
-            $posts = Post::with('user', 'postComments')
-                ->where('post_title', 'like', '%' . $request->keyword . '%')
-                ->orWhere('post', 'like', '%' . $request->keyword . '%')->get();
-        } else if ($request->category_word) {
-            $sub_category = $request->category_word;
-            $posts = Post::with('user', 'postComments')->get();
-        } else if ($request->like_posts) {
-            $likes = Auth::user()->likePostId()->get('like_post_id');
-            $posts = Post::with('user', 'postComments')
-                ->whereIn('id', $likes)->get();
-        } else if ($request->my_posts) {
-            $posts = Post::with('user', 'postComments')
-                ->where('user_id', Auth::id())->get();
+        $postsQuery = Post::with(['user', 'postComments'])
+            ->withCount('likes');
+
+        // キーワード検索
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $postsQuery->where(function ($q) use ($keyword) {
+                $q->where('post_title', 'like', "%{$keyword}%")
+                    ->orWhere('post', 'like', "%{$keyword}%");
+            });
         }
+
+        // いいねした投稿
+        if ($request->filled('like_posts')) {
+            $likePostIds = Auth::user()->likePostId()->pluck('like_post_id');
+            $postsQuery->whereIn('id', $likePostIds);
+        }
+
+        // 自分の投稿
+        if ($request->filled('my_posts')) {
+            $postsQuery->where('user_id', Auth::id());
+        }
+
+        $posts       = $postsQuery->get();
+        $categories  = MainCategory::all();
+        $like        = new Like;
+        $post_comment = new Post;
+
         return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
     }
 
+    /*投稿詳細 */
     public function postDetail($post_id)
     {
-        $post = Post::with('user', 'postComments')->findOrFail($post_id);
+        $post = Post::with(['user', 'postComments'])
+            ->withCount('likes')
+            ->findOrFail($post_id);
+
         return view('authenticated.bulletinboard.post_detail', compact('post'));
     }
 
+    /* 投稿作成フォーム*/
     public function postInput()
     {
         $main_categories = MainCategory::with('subCategories')->get();
-        // dd($main_categories);
         return view('authenticated.bulletinboard.post_create', compact('main_categories'));
     }
 
+    /*投稿作成*/
     public function postCreate(PostFormRequest $request)
     {
-        $post = Post::create([
-            'user_id' => Auth::id(),
-            'post_title' => $request->post_title,
-            'post' => $request->post_body
-        ]);
-        return redirect()->route('post.show');
-    }
-
-    public function postEdit(Request $request)
-    {
-        // バリデーション
         $request->validate([
             'post_title' => 'required|string|max:100',
             'post_body' => 'required|string|max:2000',
+            'sub_category_id' => 'required|exists:sub_categories,id',
         ]);
 
-        // 自分の投稿のみ編集
+        Post::create([
+            'user_id'        => Auth::id(),
+            'post_title'     => $request->post_title,
+            'post'           => $request->post_body,
+            'sub_category_id' => $request->sub_category_id ?? null,
+        ]);
+
+        return redirect()->route('post.show');
+    }
+
+    /*編集*/
+    public function postEdit(Request $request)
+    {
+        $request->validate([
+            'post_title' => 'required|string|max:100',
+            'post_body'  => 'required|string|max:2000',
+        ]);
+
         $post = Post::where('id', $request->post_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-
-        Post::where('id', $request->post_id)->update([
+        $post->update([
             'post_title' => $request->post_title,
-            'post' => $request->post_body,
+            'post'       => $request->post_body,
         ]);
-        return redirect()->route('post.detail', ['id' => $request->post_id]);
+
+        return redirect()->route('post.detail', ['id' => $post->id]);
     }
 
+    /*削除*/
     public function postDelete($id)
     {
-        Post::findOrFail($id)->delete();
+        Post::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->delete();
+
         return redirect()->route('post.show');
     }
+
+    /*メインカテゴリ作成*/
     public function mainCategoryCreate(Request $request)
     {
         MainCategory::create(['main_category' => $request->main_category_name]);
         return redirect()->route('post.input');
     }
 
+    /*コメント作成*/
     public function commentCreate(Request $request)
     {
-        // バリデーション
         $request->validate([
             'comment' => 'required|string|max:250',
         ]);
@@ -104,22 +132,36 @@ class PostsController extends Controller
         PostComment::create([
             'post_id' => $request->post_id,
             'user_id' => Auth::id(),
-            'comment' => $request->comment
+            'comment' => $request->comment,
         ]);
+
         return redirect()->route('post.detail', ['id' => $request->post_id]);
     }
 
+    /*自分の投稿一覧*/
     public function myBulletinBoard()
     {
-        $posts = Auth::user()->posts()->get();
+        $posts = Auth::user()
+            ->posts()
+            ->with(['user', 'postComments'])
+            ->withCount('likes')
+            ->get();
+
         $like = new Like;
         return view('authenticated.bulletinboard.post_myself', compact('posts', 'like'));
     }
 
+    /*いいね*/
     public function likeBulletinBoard()
     {
-        $like_post_id = Like::with('users')->where('like_user_id', Auth::id())->get('like_post_id')->toArray();
-        $posts = Post::with('user')->whereIn('id', $like_post_id)->get();
+        $likePostIds = Like::where('like_user_id', Auth::id())
+            ->pluck('like_post_id');
+
+        $posts = Post::with(['user', 'postComments'])
+            ->whereIn('id', $likePostIds)
+            ->withCount('likes')
+            ->get();
+
         $like = new Like;
         return view('authenticated.bulletinboard.post_like', compact('posts', 'like'));
     }
@@ -129,40 +171,44 @@ class PostsController extends Controller
         $user_id = Auth::id();
         $post_id = $request->post_id;
 
-        $like = new Like;
+        $alreadyLiked = Like::where('like_user_id', $user_id)
+            ->where('like_post_id', $post_id)
+            ->exists();
 
-        $like->like_user_id = $user_id;
-        $like->like_post_id = $post_id;
-        $like->save();
+        if (!$alreadyLiked) {
+            Like::create([
+                'like_user_id'  => $user_id,
+                'like_post_id'  => $post_id,
+            ]);
+        }
 
-        return response()->json();
+        $likeCount = Like::where('like_post_id', $post_id)->count();
+
+        return response()->json(['like_count' => $likeCount]);
     }
 
     public function postUnLike(Request $request)
     {
-        $user_id = Auth::id();
-        $post_id = $request->post_id;
-
-        $like = new Like;
-
-        $like->where('like_user_id', $user_id)
-            ->where('like_post_id', $post_id)
+        Like::where('like_user_id', Auth::id())
+            ->where('like_post_id', $request->post_id)
             ->delete();
 
-        return response()->json();
+        $likeCount = Like::where('like_post_id', $request->post_id)->count();
+
+        return response()->json(['like_count' => $likeCount]);
     }
+
+    /*サブカテゴリ作成*/
     public function subCategoryCreate(Request $request)
     {
-        // バリデーション
         $request->validate([
-            'main_category_id' => 'required|exists:main_categories,id',
+            'main_category_id'  => 'required|exists:main_categories,id',
             'sub_category_name' => 'required|string|max:100|unique:sub_categories,sub_category',
         ]);
 
-        // 登録
         SubCategory::create([
             'main_category_id' => $request->main_category_id,
-            'sub_category' => $request->sub_category_name,
+            'sub_category'     => $request->sub_category_name,
         ]);
 
         return redirect()->route('post.input')->with('success', 'サブカテゴリーを追加しました');
