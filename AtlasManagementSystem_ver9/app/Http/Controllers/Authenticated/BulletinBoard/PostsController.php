@@ -18,16 +18,33 @@ class PostsController extends Controller
     /* 投稿一覧*/
     public function show(Request $request)
     {
+        $categories = MainCategory::with('subCategories')->get();
+
         $postsQuery = Post::with(['user', 'postComments'])
             ->withCount('likes');
 
+        // カテゴリー検索
+        if ($request->filled('sub_category_id')) {
+            $postsQuery->where('sub_category_id', $request->sub_category_id);
+        }
+
         // キーワード検索
-        if ($request->filled('keyword')) {
+        elseif ($request->filled('keyword')) {
             $keyword = $request->keyword;
-            $postsQuery->where(function ($q) use ($keyword) {
-                $q->where('post_title', 'like', "%{$keyword}%")
-                    ->orWhere('post', 'like', "%{$keyword}%");
-            });
+
+            $subCategory = SubCategory::where('sub_category', $keyword)->first();
+
+            if ($subCategory) {
+                $postsQuery->where('sub_category_id', $subCategory->id);
+            } else {
+                $postsQuery->where(function ($q) use ($keyword) {
+                    $q->where('post_title', 'like', "%{$keyword}%")
+                        ->orWhereHas('user', function ($userQ) use ($keyword) {
+                            $userQ->where('over_name',  'like', "%{$keyword}%")
+                                ->orWhere('under_name', 'like', "%{$keyword}%");
+                        });
+                });
+            }
         }
 
         // いいねした投稿
