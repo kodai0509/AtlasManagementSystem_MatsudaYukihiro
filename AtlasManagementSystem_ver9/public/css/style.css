@@ -233,6 +233,18 @@ li {
     font-size: 12px;
 }
 
+.post_btn {
+    font-size: 12px;
+    border-radius: 5px;
+    padding: 0 5px;
+    border: none;
+    background: #3effff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 /* 掲示板　カテゴリー */
 .category_area {
     background: #fff;
@@ -301,4 +313,42 @@ li {
 
 .subject_inner {
     display: none;
+}
+
+/* 検索フォームの矢印 */
+.select_wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select_wrapper::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid #333;
+    border-bottom: 2px solid #333;
+    transform: translateY(-50%) rotate(45deg);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.select_wrapper select:focus + ::after {
+    /* selectがフォーカスされたら矢印を反転 */
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+.select_wrapper select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+.select_wrapper.open::after {
+    transform: translateY(-50%) rotate(-135deg);
 }

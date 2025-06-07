@@ -30,30 +30,38 @@
     </div>
     <div class="other_area border w-25">
       <div class="border m-4">
-        <div class=""><a href="{{ route('post.input') }}">投稿</a></div>
+        <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a></div>
         <div class="">
           <input type="text" placeholder="キーワードを検索" name="keyword" form="postSearchRequest">
           <input type="submit" value="検索" form="postSearchRequest">
         </div>
         <input type="submit" name="like_posts" class="category_btn" value="いいねした投稿" form="postSearchRequest">
         <input type="submit" name="my_posts" class="category_btn" value="自分の投稿" form="postSearchRequest">
-        <ul>
-          @foreach($categories as $category)
-          <li class="main_categories" category_id="{{ $category->id }}">
-            <span>{{ $category->main_category }}</span>
-            <ul class="ml-3">
-              @foreach($category->subCategories as $sub)
-              <li>
-                <a href="{{ route('post.show', ['sub_category_id' => $sub->id]) }}"
-                  class="sub_category_btn">
-                  {{ $sub->sub_category }}
-                </a>
-              </li>
+        <div class="category_select_area">
+          <label for="main_category">カテゴリー検索</label>
+          <div class="select_wrapper">
+            <select id="main_category" class="main_category_select">
+              <option value="" selected disabled>選択してください</option>
+              @foreach($categories as $category)
+              <option value="{{ $category->id }}">{{ $category->main_category }}</option>
               @endforeach
-            </ul>
-          </li>
+            </select>
+          </div>
+
+          @foreach($categories as $category)
+          <ul class="sub_categories_list" data-category-id="{{ $category->id }}" style="display: none;">
+            @foreach($category->subCategories as $sub)
+            <li>
+              <a href="{{ route('post.show', ['sub_category_id' => $sub->id]) }}"
+                class="sub_category_btn">
+                {{ $sub->sub_category }}
+              </a>
+            </li>
+            @endforeach
+          </ul>
           @endforeach
-        </ul>
+        </div>
+
       </div>
     </div>
     <form action="{{ route('post.show') }}" method="get" id="postSearchRequest"></form>

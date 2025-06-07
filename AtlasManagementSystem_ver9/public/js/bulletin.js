@@ -96,4 +96,23 @@ $(function () {
         e.preventDefault();
         $(".delete-modal").fadeOut();
     });
+
+    // 検索
+    $("#main_category").on("change", function () {
+        var selectedId = $(this).val();
+        $(".sub_categories_list").hide();
+        $('.sub_categories_list[data-category-id="' + selectedId + '"]').show();
+    });
+
+    const $select = $("#main_category");
+    const $wrapper = $select.parent(".select_wrapper");
+    $select.on("click", function (e) {});
+
+    $select.on("focus", function () {
+        $wrapper.addClass("open");
+    });
+
+    $select.on("blur", function () {
+        $wrapper.removeClass("open");
+    });
 });
