@@ -39,8 +39,8 @@ li {
 
 /* サイドバー */
 .sidebar {
-    width: 200px; /* 少し拡大*/
-    height: 100vh;
+    width: 200px;
+    height: 200vh;
     background-color: #03aad2;
     font-weight: bold;
 }
@@ -243,6 +243,8 @@ li {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    width: 200px;
+    height: 30px;
 }
 
 /* 掲示板　カテゴリー */
@@ -336,7 +338,6 @@ li {
 }
 
 .select_wrapper select:focus + ::after {
-    /* selectがフォーカスされたら矢印を反転 */
     transform: translateY(-50%) rotate(-135deg);
 }
 
@@ -351,4 +352,85 @@ li {
 
 .select_wrapper.open::after {
     transform: translateY(-50%) rotate(-135deg);
+}
+
+/* 検索ボタン */
+.search_area {
+    display: flex;
+    margin-bottom: 10px;
+    width: 200px;
+    height: 30px;
+}
+
+.search_area input[type="text"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 70%;
+}
+
+.search_area input[type="submit"] {
+    background: #3effff;
+    color: #fff;
+    border: none;
+    width: 30%;
+    border-radius: 5px;
+}
+
+/* 投稿検索 */
+.search_posts {
+    display: flex;
+    margin-bottom: 10px;
+    width: 200px;
+    height: 30px;
+    gap: 10px;
+}
+
+.like_posts {
+    width: 50%;
+    background-color: #ff9bc8;
+}
+
+.my_posts {
+    width: 50%;
+    background-color: #ffbe00;
+}
+
+/*カテゴリー検索 */
+
+.category_select_area {
+    width: 100%;
+}
+.select_wrapper {
+    border: none;
+}
+
+.main_category_select {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    background: transparent;
+    padding: 4px 0;
+    outline: none;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #000;
+}
+
+.sub_categories_list li {
+    list-style: none;
+    width: 60%;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #000;
+}
+
+.sub_category_btn,
+.sub_category_btn:visited {
+    color: #000;
+}
+
+.sub_category_btn:hover {
+    color: #03aad2;
 }

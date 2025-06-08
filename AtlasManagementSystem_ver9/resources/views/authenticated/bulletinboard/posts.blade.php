@@ -1,7 +1,6 @@
 <x-sidebar>
   <div class="board_area w-100 border m-auto d-flex">
     <div class="post_view w-75 mt-5">
-      <p class="w-75 m-auto">投稿一覧</p>
       @foreach($posts as $post)
       <div class="post_area border w-75 m-auto p-3">
         <p><span>{{ $post->user->over_name }}</span><span class="ml-3">{{ $post->user->under_name }}</span>さん</p>
@@ -28,15 +27,17 @@
       </div>
       @endforeach
     </div>
-    <div class="other_area border w-25">
-      <div class="border m-4">
+    <div class="other_area w-25">
+      <div class="m-4">
         <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a></div>
-        <div class="">
+        <div class="search_area">
           <input type="text" placeholder="キーワードを検索" name="keyword" form="postSearchRequest">
           <input type="submit" value="検索" form="postSearchRequest">
         </div>
-        <input type="submit" name="like_posts" class="category_btn" value="いいねした投稿" form="postSearchRequest">
-        <input type="submit" name="my_posts" class="category_btn" value="自分の投稿" form="postSearchRequest">
+        <div class="search_posts">
+          <input type="submit" name="like_posts" class="category_btn like_posts" value="いいねした投稿" form="postSearchRequest">
+          <input type="submit" name="my_posts" class="category_btn my_posts" value="自分の投稿" form="postSearchRequest">
+        </div>
         <div class="category_select_area">
           <label for="main_category">カテゴリー検索</label>
           <div class="select_wrapper">
