@@ -48,7 +48,7 @@
           <span>未登録</span>
           @else
           @foreach($user->subjects as $subject)
-          <span>{{ $subject->subject }}</span>@if (!$loop->last)、@endif
+          <span>{{ $subject->subject }}</span>
           @endforeach
           @endif
           @endif
@@ -96,6 +96,14 @@
             </div>
             <div class="selected_engineer">
               <label>選択科目</label>
+              <div class="subject-checkboxes" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                @foreach($subjects as $subject)
+                <label style="display: flex; align-items: center;">
+                  <input type="checkbox" name="subjects[]" value="{{ $subject->id }}" form="userSearchRequest">
+                  <span style="margin-left: 4px;">{{ $subject->subject }}</span>
+                </label>
+                @endforeach
+              </div>
             </div>
           </div>
         </div>
