@@ -276,7 +276,7 @@ li {
     cursor: pointer;
 }
 
-/* ユーザー検索 */
+/* 投稿検索 */
 .reserve_users_area {
     display: flex;
     flex-wrap: wrap;
@@ -433,4 +433,59 @@ li {
 
 .sub_category_btn:hover {
     color: #03aad2;
+}
+
+/* ユーザー検索 */
+.user-search {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    gap: 10px;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    gap: 5px;
+}
+
+.user-search select {
+    border-radius: 5px;
+    padding: 4px;
+    background-color: #eee;
+}
+
+.search_conditions {
+    position: relative;
+    display: inline-block;
+    padding-right: 24px;
+    cursor: pointer;
+    border-bottom: 1px solid #999;
+    width: 250px;
+}
+
+.search_conditions::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid #333;
+    border-bottom: 2px solid #333;
+    transform: translateY(-50%) rotate(45deg);
+    transition: transform 0.3s ease;
+}
+
+.search_conditions.open::after {
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+.search_span {
+    padding-bottom: 10px;
+}
+
+.search_conditions_inner {
+    background-color: #eee;
 }
