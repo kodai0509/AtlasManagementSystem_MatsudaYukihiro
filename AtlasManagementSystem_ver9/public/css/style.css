@@ -489,3 +489,12 @@ li {
 .search_conditions_inner {
     background-color: #eee;
 }
+
+/* 予約表 */
+.past-day {
+    background-color: #d3d3d3;
+}
+.no-reserve {
+    color: red;
+    font-weight: bold;
+}

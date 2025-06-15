@@ -40,6 +40,8 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('calendar/{user_id}', [CalendarController::class, 'show'])->name('calendar.general.show');
                 Route::post('reserve/calendar', [CalendarController::class, 'reserve'])->name('reserveParts');
                 Route::post('delete/calendar', [CalendarController::class, 'delete'])->name('deleteParts');
+                // 予約キャンセル
+                Route::post('cancel/calendar', [CalendarController::class, 'cancel'])->name('reserve.cancel');
             });
             Route::namespace('Admin')->group(function () {
                 Route::get('calendar/{user_id}/admin', [CalendarsController::class, 'show'])->name('calendar.admin.show');

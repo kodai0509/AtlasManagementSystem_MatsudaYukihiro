@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class SubjectsTableSeeder extends Seeder
@@ -16,9 +16,16 @@ class SubjectsTableSeeder extends Seeder
      */
     public function run()
     {
+        // 外部キー制約を一時的に無効化
+        Schema::disableForeignKeyConstraints();
+
+        DB::table('subject_users')->truncate();
         DB::table('subjects')->truncate();
 
-        // 国語、数学、英語を追加
+        // 外部キー制約を有効化
+        Schema::enableForeignKeyConstraints();
+
+        // 教科
         DB::table('subjects')->insert([
             [
                 'subject' => '国語',

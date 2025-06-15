@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         // Register your seeders here
         $this->call([
             SubjectsTableSeeder::class,
-            SubjectsTableSeeder::class,
         ]);
+        $this->call(ReserveSettingsTableSeeder::class);
     }
 }
