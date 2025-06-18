@@ -7,9 +7,12 @@
           {!! $calendar->render() !!}
         </div>
       </div>
-      <div class="text-right w-75 m-auto">
-        <input type="submit" class="btn btn-primary" value="予約する" form="reserveParts">
-      </div>
+      <form id="reserveParts" action="{{ route('reserveParts') }}" method="POST">
+        @csrf
+        <div class="text-right w-75 m-auto">
+          <input type="submit" class="btn btn-primary" value="予約する" form="reserveParts">
+        </div>
+      </form>
     </div>
   </div>
 
@@ -49,7 +52,6 @@
         document.getElementById('inputReserveDate').value = date;
         document.getElementById('inputReservePart').value = part;
 
-        // BootstrapのModalをJSで開く（もし自動で開かない場合）
         const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
         modal.show();
       });

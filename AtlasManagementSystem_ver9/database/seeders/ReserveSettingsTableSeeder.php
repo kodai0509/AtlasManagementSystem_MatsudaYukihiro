@@ -10,12 +10,15 @@ class ReserveSettingsTableSeeder extends Seeder
 {
     public function run()
     {
+        $startDate = Carbon::today();
+        // いったん1年後まで
+        $endDate = Carbon::today()->addYear();
 
-        for ($i = 0; $i < 3; $i++) {
-            $date = Carbon::today()->addDays($i)->format('Y-m-d');
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $formattedDate = $date->format('Y-m-d');
             foreach ([1, 2, 3] as $part) {
                 DB::table('reserve_settings')->insert([
-                    'setting_reserve' => $date,
+                    'setting_reserve' => $formattedDate,
                     'setting_part' => $part,
                     'limit_users' => 20,
                     'created_at' => now(),
