@@ -4,7 +4,9 @@ namespace App\Calendars\General;
 
 use App\Models\Calendars\ReserveSettings;
 use Carbon\Carbon;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CalendarWeekDay
 {
@@ -62,7 +64,7 @@ class CalendarWeekDay
     $parts = [1, 2, 3];
     $hasAvailable = false;
 
-    $html[] = '<select name="getPart[]" class="border-primary" style="width:70px; border-radius:5px;" form="reserveParts">';
+    $html[] = '<select name="reserve_parts[' . $ymd . ']" class="border-primary" style="width:70px; border-radius:5px;" form="reserveParts">';
     $html[] = '<option value="" selected></option>';
 
     foreach ($parts as $part) {
@@ -74,7 +76,7 @@ class CalendarWeekDay
       }
 
       // 予約人数カウント
-      $reservedCount = \DB::table('reserve_setting_users')
+      $reservedCount = DB::table('reserve_setting_users')
         ->where('reserve_setting_id', $setting->id)
         ->count();
 
@@ -110,11 +112,28 @@ class CalendarWeekDay
 
   function authReserveDay()
   {
-    return Auth::user()->reserveSettings->pluck('setting_reserve')->toArray();
+    $user = Auth::user();
+    if (!$user) return [];
+
+    $dates = ReserveSettings::whereHas('users', function ($q) use ($user) {
+      $q->where('user_id', $user->id);
+    })->pluck('setting_reserve')->toArray();
+
+    logger()->debug('authReserveDay dates:', $dates);
+
+    return $dates;
   }
+
 
   function authReserveDate($reserveDate)
   {
-    return Auth::user()->reserveSettings->where('setting_reserve', $reserveDate);
+    $user = Auth::user();
+    if (!$user) return collect();
+
+    return ReserveSettings::where('setting_reserve', $reserveDate)
+      ->whereHas('users', function ($q) use ($user) {
+        $q->where('user_id', $user->id);
+      })
+      ->get();
   }
 }

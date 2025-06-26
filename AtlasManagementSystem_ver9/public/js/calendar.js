@@ -1,16 +1,31 @@
 $(function () {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const reserveForm = document.querySelector("#reserveParts");
+    if (!reserveForm) return;
 
-    $('td.calendar-td input[type="hidden"][name="getData[]"]').each(
-        function () {
-            const dateStr = $(this).val();
-            const cellDate = new Date(dateStr);
-            cellDate.setHours(0, 0, 0, 0);
+    reserveForm.addEventListener("submit", function (e) {
+        const existingHiddens = reserveForm.querySelectorAll(
+            'input[type="hidden"].added-by-js'
+        );
+        existingHiddens.forEach((h) => h.remove());
 
-            if (cellDate < today) {
-                $(this).parent().addClass("past-day");
-            }
-        }
-    );
+        const selectedSelects = document.querySelectorAll(
+            'select[name^="reserve_parts["]'
+        );
+        selectedSelects.forEach((el) => {
+            if (!el.value) return;
+
+            const nameMatch = el.name.match(/reserve_parts\[(.*?)\]/);
+            if (!nameMatch) return;
+
+            const date = nameMatch[1];
+            const part = el.value;
+
+            const hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = `reserve_parts[${date}]`;
+            hidden.value = part;
+            hidden.classList.add("added-by-js");
+            reserveForm.appendChild(hidden);
+        });
+    });
 });

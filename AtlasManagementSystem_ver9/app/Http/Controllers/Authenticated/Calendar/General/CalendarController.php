@@ -7,52 +7,51 @@ use Illuminate\Http\Request;
 use App\Calendars\General\CalendarView;
 use App\Models\Calendars\ReserveSettings;
 use App\Models\Calendars\Calendar;
-use App\Models\USers\User;
-use Auth;
-use DB;
+use App\Models\Users\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CalendarController extends Controller
 {
     public function show()
     {
-        $calendar = new CalendarView(time());
-        return view('authenticated.calendar.general.calendar', compact('calendar'));
+        $user = \App\Models\Users\User::with('reserveSettings')->find(Auth::id());
+        $userId = Auth::id();
+        $calendar = new CalendarView(time(), $userId);
+
+        // 予約済みのReserveSettingsを取得
+        $userReserved = $user->reserveSettings()->get();
+
+        return view('authenticated.calendar.general.calendar', compact('calendar', 'userReserved'));
     }
+
+
 
     public function reserve(Request $request)
     {
-        // Log::info('reserve called', $request->all());
-
         DB::beginTransaction();
         try {
-            $getPart = $request->getPart ?? [];
-            $getDate = $request->getData ?? [];
+            $reserveParts = $request->input('reserve_parts', []);  // ← 修正ポイント
 
-            $filteredDates = [];
-            $filteredParts = [];
+            if (empty($reserveParts)) {
+                throw new \Exception('予約データがありません');
+            }
 
-            foreach ($getDate as $index => $date) {
-                if (isset($getPart[$index]) && $getPart[$index] !== '') {
-                    $filteredDates[] = $date;
-                    $filteredParts[] = $getPart[$index];
+            foreach ($reserveParts as $date => $part) {
+                if (empty($part)) {
+                    continue;
                 }
-            }
 
-            if (count($filteredDates) !== count($filteredParts)) {
-                throw new \Exception('予約データ不整合エラー');
-            }
-
-            $reserveDays = array_combine($filteredDates, $filteredParts);
-
-            foreach ($reserveDays as $date => $part) {
-                $reserve_settings = ReserveSettings::where('setting_reserve', $date)
+                $reserveSetting = ReserveSettings::where('setting_reserve', $date)
                     ->where('setting_part', $part)
                     ->first();
-                if (!$reserve_settings) {
+
+                if (!$reserveSetting) {
                     throw new \Exception("予約設定が見つかりません: $date 部 $part");
                 }
-                $reserve_settings->decrement('limit_users');
-                $reserve_settings->users()->attach(Auth::id());
+
+                $reserveSetting->decrement('limit_users');
+                $reserveSetting->users()->attach(Auth::id());
             }
 
             DB::commit();
@@ -60,15 +59,18 @@ class CalendarController extends Controller
             DB::rollback();
             return back()->withErrors(['error' => '予約に失敗しました: ' . $e->getMessage()]);
         }
-        return redirect()->route('calendar.general.show', ['user_id' => Auth::id()]);
+
+        return redirect()->route('calendar.general.show');
     }
+
+
     public function cancel(Request $request)
     {
         $user = Auth::user();
         $date = $request->reserve_date;
-        $partName = $request->reserve_part; // 例: 'リモ1部'
+        $partName = $request->reserve_part;
 
-        // 部数を取得(例: '1' を抽出)
+
         preg_match('/リモ(\d+)部/', $partName, $matches);
         if (!isset($matches[1])) {
             return back()->withErrors(['error' => 'キャンセル部位が不正です']);
@@ -83,10 +85,8 @@ class CalendarController extends Controller
             return back()->withErrors(['error' => '予約設定が見つかりません']);
         }
 
-        // 予約解除（pivotテーブルから削除）
         $reserveSetting->users()->detach($user->id);
 
-        // limit_usersを1増やす（キャンセル分の枠を戻す）
         $reserveSetting->increment('limit_users');
 
         return redirect()->route('calendar.general.show')->with('status', '予約をキャンセルしました');

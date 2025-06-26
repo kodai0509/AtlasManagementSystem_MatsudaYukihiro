@@ -112,7 +112,7 @@ class RegisteredUserController extends Controller
 
             if ($request->role == 4) {
                 // 重複している科目を取り除くために配列をユニークにする
-                $uniqueSubjects = array_unique($request->subject);
+                $uniqueSubjects = array_unique($request->input('subjects', []));
 
                 // ユーザーと科目を関連付け
                 $user = User::findOrFail($user_get->id);

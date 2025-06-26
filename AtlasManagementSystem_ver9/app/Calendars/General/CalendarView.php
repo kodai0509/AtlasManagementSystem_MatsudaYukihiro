@@ -9,10 +9,12 @@ class CalendarView
 {
 
   private $carbon;
-  function __construct($date)
+  private $userId;
+
+  function __construct($date, $userId)
   {
     $this->carbon = new Carbon($date);
-    $this->userId = Auth::id();
+    $this->userId = $userId;
   }
 
   public function getTitle()
@@ -59,16 +61,25 @@ class CalendarView
 
         if (in_array($day->everyDay(), $day->authReserveDay())) {
           $reserve = $day->authReserveDate($day->everyDay())->first();
-          $parts = [1 => "リモ1部", 2 => "リモ2部", 3 => "リモ3部"];
-          $reservePart = $parts[$reserve->setting_part] ?? '';
 
-          if ($day->everyDay() < now()->format('Y-m-d')) {
-            $html[] = '<p class="m-auto p-0 w-75 text-success" style="font-size:12px;">' . $reservePart . '</p>';
+          if ($reserve) {
+            $partText = 'リモ' . $reserve->setting_part . '部';
+
+            if ($day->everyDay() < now()->format('Y-m-d')) {
+              $html[] = '<p class="m-auto p-0 w-75 text-success" style="font-size:12px;">' . $partText . '</p>';
+            } else {
+              $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-btn" ' .
+                'style="font-size:12px;" ' .
+                'data-date="' . $reserve->setting_reserve . '" ' .
+                'data-part="' . $partText . '">' .
+                $partText .
+                '</button>';
+            }
+
+            $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
           } else {
-            $html[] = '<button type="submit" class="btn btn-danger p-0 w-75" name="delete_date" style="font-size:12px" value="' . $reserve->setting_reserve . '">' . $reservePart . '</button>';
+            $html[] = '<p class="text-danger" style="font-size:12px;">予約データ取得エラー</p>';
           }
-
-          $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
         } else {
           // 未参加
           if ($day->everyDay() < now()->format('Y-m-d')) {
@@ -114,22 +125,28 @@ class CalendarView
     $html = [];
     $parts = [1 => '1部', 2 => '2部', 3 => '3部'];
 
-    foreach ($parts as $part => $label) {
-      $reservedCount = \App\Models\Calendars\Reserve::where('reserve_date', $date)
-        ->where('reserve_part', $part)
-        ->count();
+    $html[] = "<select name='reserve_parts[{$date}]' class='border-primary' style='width:100px; border-radius:5px;' form='reserveParts'>";
+    $html[] = "<option value='' selected>選択してください</option>";
 
-      $remaining = 20 - $reservedCount;
+    foreach ($parts as $part => $label) {
+      $reserveSetting = \App\Models\Calendars\ReserveSettings::where('setting_reserve', $date)
+        ->where('setting_part', $part)
+        ->first();
+
+      if (!$reserveSetting) {
+        continue;
+      }
+
+      $reservedCount = $reserveSetting->users()->count();
+      $remaining = $reserveSetting->limit_users - $reservedCount;
 
       if ($remaining <= 0) {
-        $html[] = "<p class='text-danger m-0' style='font-size:12px;'>$label: 満席</p>";
-      } else {
-        $html[] = "<label style='font-size:12px;'>
-                <input type='radio' name='reserve_parts[$date]' value='$part' form='reserveParts'>
-                $label（残り: $remaining名）
-            </label>";
+        continue;
       }
+
+      $html[] = "<option value='{$part}'>{$label} (残り{$remaining}名)</option>";
     }
+    $html[] = "</select>";
 
     return implode('', $html);
   }

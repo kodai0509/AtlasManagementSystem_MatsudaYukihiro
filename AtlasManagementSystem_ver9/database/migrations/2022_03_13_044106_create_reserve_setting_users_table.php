@@ -19,9 +19,10 @@ class CreateReserveSettingUsersTable extends Migration
             $table->unsignedBigInteger('reserve_setting_id')->comment('カレンダー予約ID');
             $table->timestamp('created_at')->nullable()->comment('登録日時');
 
-            // 外部キー制約の追加
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('reserve_setting_id')->references('id')->on('reserve_settings');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('reserve_setting_id')->references('id')->on('reserve_settings')->onDelete('cascade');
+
+            $table->unique(['user_id', 'reserve_setting_id']);
         });
     }
 
