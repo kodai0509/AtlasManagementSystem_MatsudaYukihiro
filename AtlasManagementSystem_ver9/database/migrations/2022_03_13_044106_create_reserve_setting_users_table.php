@@ -17,7 +17,7 @@ class CreateReserveSettingUsersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->comment('ユーザーID');
             $table->unsignedBigInteger('reserve_setting_id')->comment('カレンダー予約ID');
-            $table->timestamp('created_at')->nullable()->comment('登録日時');
+            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('reserve_setting_id')->references('id')->on('reserve_settings')->onDelete('cascade');

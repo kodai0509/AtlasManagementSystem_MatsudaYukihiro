@@ -19,7 +19,7 @@ class CalendarController extends Controller
         $userId = Auth::id();
         $calendar = new CalendarView(time(), $userId);
 
-        // 予約済みのReserveSettingsを取得
+
         $userReserved = $user->reserveSettings()->get();
 
         return view('authenticated.calendar.general.calendar', compact('calendar', 'userReserved'));
@@ -29,9 +29,12 @@ class CalendarController extends Controller
 
     public function reserve(Request $request)
     {
+        // dd($request->all());
+        dd($request->input('reserve_parts'));
+
         DB::beginTransaction();
         try {
-            $reserveParts = $request->input('reserve_parts', []);  // ← 修正ポイント
+            $reserveParts = $request->input('reserve_parts', []);
 
             if (empty($reserveParts)) {
                 throw new \Exception('予約データがありません');
@@ -41,6 +44,7 @@ class CalendarController extends Controller
                 if (empty($part)) {
                     continue;
                 }
+
 
                 $reserveSetting = ReserveSettings::where('setting_reserve', $date)
                     ->where('setting_part', $part)
