@@ -6,31 +6,28 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Calendars\General\CalendarView;
 use App\Models\Calendars\ReserveSettings;
-use App\Models\Calendars\Calendar;
 use App\Models\Users\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CalendarController extends Controller
 {
     public function show()
     {
-        $user = \App\Models\Users\User::with('reserveSettings')->find(Auth::id());
+        $user = User::with('reserveSettings')->find(Auth::id());
         $userId = Auth::id();
         $calendar = new CalendarView(time(), $userId);
 
-
-        $userReserved = $user->reserveSettings()->get();
+        $userReserved = $user ? $user->reserveSettings()->get() : collect();
 
         return view('authenticated.calendar.general.calendar', compact('calendar', 'userReserved'));
     }
 
-
-
     public function reserve(Request $request)
     {
-        // dd($request->all());
-        dd($request->input('reserve_parts'));
+        // \Log::debug('All request data:', $request->all());
+        // \Log::debug('Reserve parts:', $request->input('reserve_parts', []));
 
         DB::beginTransaction();
         try {
@@ -45,7 +42,6 @@ class CalendarController extends Controller
                     continue;
                 }
 
-
                 $reserveSetting = ReserveSettings::where('setting_reserve', $date)
                     ->where('setting_part', $part)
                     ->first();
@@ -54,26 +50,39 @@ class CalendarController extends Controller
                     throw new \Exception("予約設定が見つかりません: $date 部 $part");
                 }
 
-                $reserveSetting->decrement('limit_users');
-                $reserveSetting->users()->attach(Auth::id());
+                // 予約済みか
+                if ($reserveSetting->users()->where('user_id', Auth::id())->exists()) {
+                    // Log::info('すでに予約済みのためスキップ', ['user_id' => Auth::id(), 'date' => $date, 'part' => $part]);
+                    continue;
+                }
+
+                // 残り枠があるか
+                $reservedCount = $reserveSetting->users()->count();
+                $remaining = $reserveSetting->limit_users - $reservedCount;
+                if ($remaining <= 0) {
+                    throw new \Exception("予約枠が満員です: $date 部 $part");
+                }
+
+                $reserveSetting->users()->attach(Auth::id(), [
+                    'created_at' => now()
+                ]);
             }
 
             DB::commit();
+            return redirect()->route('calendar.general.show', ['user_id' => Auth::id()])
+                ->with('success', '予約が完了しました');
         } catch (\Exception $e) {
-            DB::rollback();
+            // DB::rollback();
+            // \Log::error('予約エラー:', ['error' => $e->getMessage(), 'user_id' => Auth::id()]);
             return back()->withErrors(['error' => '予約に失敗しました: ' . $e->getMessage()]);
         }
-
-        return redirect()->route('calendar.general.show');
     }
-
 
     public function cancel(Request $request)
     {
         $user = Auth::user();
         $date = $request->reserve_date;
         $partName = $request->reserve_part;
-
 
         preg_match('/リモ(\d+)部/', $partName, $matches);
         if (!isset($matches[1])) {
@@ -90,8 +99,6 @@ class CalendarController extends Controller
         }
 
         $reserveSetting->users()->detach($user->id);
-
-        $reserveSetting->increment('limit_users');
 
         return redirect()->route('calendar.general.show')->with('status', '予約をキャンセルしました');
     }

@@ -30,7 +30,6 @@ class CalendarWeekDay
   /**
    * @return
    */
-
   function render()
   {
     return '<p class="day">' . $this->carbon->format("j") . '日</p>';
@@ -40,6 +39,10 @@ class CalendarWeekDay
   {
     $user = Auth::user();
 
+    // 該当日のReserveSettingsを取得してログ出力
+    $settings = ReserveSettings::where('setting_reserve', $ymd)->get();
+    Log::debug('selectPart: ReserveSettings for ' . $ymd, $settings->toArray());
+
     //ユーザー予約を取得
     $userReservations = $user
       ? $user->reserveSettings()->where('setting_reserve', $ymd)->get()
@@ -47,8 +50,15 @@ class CalendarWeekDay
     $reservedParts = $userReservations->pluck('setting_part')->toArray();
 
     if (count($reservedParts) > 0) {
-      //キャンセルボタン表示
       $html = [];
+
+      $html[] = '<div class="reserved-parts text-success">';
+      foreach ($reservedParts as $part) {
+        $html[] = '<p class="m-0">予約済：リモ' . e($part) . '部</p>';
+      }
+      $html[] = '</div>';
+
+      //キャンセルボタン
       foreach ($reservedParts as $part) {
         $partName = 'リモ' . $part . '部';
         $html[] = '<button type="button" class="btn btn-danger cancel-btn" data-toggle="modal" data-target="#cancelModal" ';
@@ -56,6 +66,7 @@ class CalendarWeekDay
         $html[] = 'data-reserve-part="' . e($partName) . '">';
         $html[] = 'キャンセル (' . e($partName) . ')</button>';
       }
+
       return implode('', $html);
     }
 
@@ -98,8 +109,6 @@ class CalendarWeekDay
     return implode('', $html);
   }
 
-
-
   function getDate()
   {
     return '<input type="hidden" value="' . $this->carbon->format('Y-m-d') . '" name="getData[]" form="reserveParts">';
@@ -119,11 +128,10 @@ class CalendarWeekDay
       $q->where('user_id', $user->id);
     })->pluck('setting_reserve')->toArray();
 
-    logger()->debug('authReserveDay dates:', $dates);
+    logger()->debug('authReserveDay dates:', ['dates' => $dates]);
 
     return $dates;
   }
-
 
   function authReserveDate($reserveDate)
   {

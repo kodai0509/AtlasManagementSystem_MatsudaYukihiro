@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReserveSettings extends Model
 {
-    const UPDATED_AT = null;
     public $timestamps = false;
 
     protected $fillable = [
@@ -22,6 +21,6 @@ class ReserveSettings extends Model
             'reserve_setting_users',
             'reserve_setting_id',
             'user_id'
-        )->withTimestamps();
+        ); // withTimestamps()を削除
     }
 }

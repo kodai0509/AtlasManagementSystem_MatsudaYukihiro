@@ -10,9 +10,12 @@ class ReserveSettingsTableSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('reserve_settings')->truncate();
+
         $startDate = Carbon::today();
         // いったん1年後まで
         $endDate = Carbon::today()->addYear();
+
 
         for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
             $formattedDate = $date->format('Y-m-d');

@@ -7,7 +7,6 @@ use Auth;
 
 class CalendarView
 {
-
   private $carbon;
   private $userId;
 
@@ -39,30 +38,33 @@ class CalendarView
     $html[] = '</tr>';
     $html[] = '</thead>';
     $html[] = '<tbody>';
+
     $weeks = $this->getWeeks();
+
     foreach ($weeks as $week) {
       $html[] = '<tr class="' . $week->getClassName() . '">';
 
       $days = $week->getDays();
       foreach ($days as $day) {
         if (!$day->everyDay()) {
-          // 日付のないセル
           $html[] = '<td class="calendar-td empty-day" style="background-color: #ddd;"></td>';
           continue;
         }
 
         $startDay = $this->carbon->copy()->format("Y-m-01");
         $toDay = $this->carbon->copy()->format("Y-m-d");
+
         $html[] = ($startDay <= $day->everyDay() && $toDay >= $day->everyDay())
           ? '<td class="calendar-td">'
           : '<td class="calendar-td ' . $day->getClassName() . '">';
 
         $html[] = $day->render();
 
-        if (in_array($day->everyDay(), $day->authReserveDay())) {
-          $reserve = $day->authReserveDate($day->everyDay())->first();
+        // 予約済み表示（複数部対応）
+        $reserves = $day->authReserveDate($day->everyDay());
 
-          if ($reserve) {
+        if ($reserves->isNotEmpty()) {
+          foreach ($reserves as $reserve) {
             $partText = 'リモ' . $reserve->setting_part . '部';
 
             if ($day->everyDay() < now()->format('Y-m-d')) {
@@ -70,18 +72,16 @@ class CalendarView
             } else {
               $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-btn" ' .
                 'style="font-size:12px;" ' .
-                'data-date="' . $reserve->setting_reserve . '" ' .
-                'data-part="' . $partText . '">' .
+                'data-reserve-date="' . $reserve->setting_reserve . '" ' .
+                'data-reserve-part="' . $partText . '">' .
                 $partText .
                 '</button>';
             }
 
             $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
-          } else {
-            $html[] = '<p class="text-danger" style="font-size:12px;">予約データ取得エラー</p>';
           }
         } else {
-          // 未参加
+          // 未予約時の表示（セレクトボックス or 受付終了）
           if ($day->everyDay() < now()->format('Y-m-d')) {
             $html[] = '<p class="m-auto p-0 w-75 text-secondary" style="font-size:12px;">受付終了</p>';
           } else {
@@ -95,6 +95,7 @@ class CalendarView
 
       $html[] = '</tr>';
     }
+
     $html[] = '</tbody>';
     $html[] = '</table>';
     $html[] = '</div>';
@@ -109,6 +110,7 @@ class CalendarView
     $lastDay = $this->carbon->copy()->lastOfMonth();
     $week = new CalendarWeek($firstDay->copy());
     $weeks[] = $week;
+
     $tmpDay = $firstDay->copy()->addDay(7)->startOfWeek();
     while ($tmpDay->lte($lastDay)) {
       $week = new CalendarWeek($tmpDay, count($weeks));
