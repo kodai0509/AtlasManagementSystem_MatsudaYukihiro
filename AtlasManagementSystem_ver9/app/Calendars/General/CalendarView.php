@@ -73,7 +73,10 @@ class CalendarView
               $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-btn" ' .
                 'style="font-size:12px;" ' .
                 'data-reserve-date="' . $reserve->setting_reserve . '" ' .
-                'data-reserve-part="' . $partText . '">' .
+                'data-reserve-part="' . $partText . '" ' .
+                'data-reserve-id="' . $reserve->id . '" ' .
+                'data-bs-toggle="modal" ' .
+                'data-bs-target="#cancelModal">' .
                 $partText .
                 '</button>';
             }

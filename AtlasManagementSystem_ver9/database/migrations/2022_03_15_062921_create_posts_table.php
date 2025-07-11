@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->unsignedBigInteger('user_id')->comment('ユーザーID');
             $table->string('post_title', 191)->index()->comment('タイトル');
             $table->text('post')->comment('投稿内容');
-            $table->timestamps(); // created_at と updated_at を自動で追加
+            $table->timestamps();
 
             // 外部キー制約を追加
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -21,6 +21,6 @@ class ReserveSettings extends Model
             'reserve_setting_users',
             'reserve_setting_id',
             'user_id'
-        ); // withTimestamps()を削除
+        );
     }
 }

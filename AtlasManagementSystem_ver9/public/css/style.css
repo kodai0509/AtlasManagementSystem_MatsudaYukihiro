@@ -498,3 +498,18 @@ li {
     color: red;
     font-weight: bold;
 }
+
+.calendar-td {
+    vertical-align: top;
+    position: relative;
+    min-height: 80px;
+    overflow: visible;
+}
+
+.cancel-btn {
+    margin-top: 4px;
+    font-size: 12px;
+    width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+}

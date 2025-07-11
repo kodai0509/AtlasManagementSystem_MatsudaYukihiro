@@ -29,7 +29,7 @@ class CalendarController extends Controller
         // \Log::debug('All request data:', $request->all());
         // \Log::debug('Reserve parts:', $request->input('reserve_parts', []));
 
-        DB::beginTransaction();
+        // DB::beginTransaction();
         try {
             $reserveParts = $request->input('reserve_parts', []);
 
@@ -68,7 +68,7 @@ class CalendarController extends Controller
                 ]);
             }
 
-            DB::commit();
+            // DB::commit();
             return redirect()->route('calendar.general.show', ['user_id' => Auth::id()])
                 ->with('success', '予約が完了しました');
         } catch (\Exception $e) {
