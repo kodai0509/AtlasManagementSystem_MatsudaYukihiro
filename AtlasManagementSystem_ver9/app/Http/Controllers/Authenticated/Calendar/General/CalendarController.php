@@ -80,26 +80,45 @@ class CalendarController extends Controller
 
     public function cancel(Request $request)
     {
-        $user = Auth::user();
-        $date = $request->reserve_date;
-        $partName = $request->reserve_part;
+        try {
+            $user = Auth::user();
+            $reserveId = $request->input('reserve_id');
 
-        preg_match('/リモ(\d+)部/', $partName, $matches);
-        if (!isset($matches[1])) {
-            return back()->withErrors(['error' => 'キャンセル部位が不正です']);
+            $reserveSetting = ReserveSettings::find($reserveId);
+
+            if (!$reserveSetting) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => '予約設定が見つかりません']);
+                }
+                return back()->withErrors(['error' => '予約設定が見つかりません']);
+            }
+
+            if (!$reserveSetting->users()->where('user_id', $user->id)->exists()) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'この予約は存在しません']);
+                }
+                return back()->withErrors(['error' => 'この予約は存在しません']);
+            }
+
+            $reserveSetting->users()->detach($user->id);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => '予約をキャンセルしました']);
+            }
+
+            return redirect()->route('calendar.general.show')
+                ->with('status', '予約をキャンセルしました');
+        } catch (\Exception $e) {
+            Log::error('予約キャンセルエラー:', [
+                'error' => $e->getMessage(),
+                'user_id' => Auth::id()
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'キャンセルに失敗しました']);
+            }
+
+            return back()->withErrors(['error' => 'キャンセルに失敗しました']);
         }
-        $part = $matches[1];
-
-        $reserveSetting = ReserveSettings::where('setting_reserve', $date)
-            ->where('setting_part', $part)
-            ->first();
-
-        if (!$reserveSetting) {
-            return back()->withErrors(['error' => '予約設定が見つかりません']);
-        }
-
-        $reserveSetting->users()->detach($user->id);
-
-        return redirect()->route('calendar.general.show')->with('status', '予約をキャンセルしました');
     }
 }
