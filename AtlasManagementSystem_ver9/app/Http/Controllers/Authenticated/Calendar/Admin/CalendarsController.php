@@ -23,9 +23,19 @@ class CalendarsController extends Controller
 
     public function reserveDetail($date, $part)
     {
-        $reservePersons = ReserveSettings::with('users')->where('setting_reserve', $date)->where('setting_part', $part)->get();
-        return view('authenticated.calendar.admin.reserve_detail', compact('reservePersons', 'date', 'part'));
+        $reserveSetting = ReserveSettings::with('users')
+            ->where('setting_reserve', $date)
+            ->where('setting_part', $part)
+            ->first();
+
+        return view('authenticated.calendar.admin.reserve_detail', [
+            'reserveSetting' => $reserveSetting,
+            'users' => $reserveSetting ? $reserveSetting->users : collect(),
+            'date' => $date,
+            'part' => $part,
+        ]);
     }
+
 
     public function reserveSettings()
     {
