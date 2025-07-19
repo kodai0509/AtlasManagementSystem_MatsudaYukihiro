@@ -321,6 +321,7 @@ li {
 .select_wrapper {
     position: relative;
     display: inline-block;
+    width: 100%;
 }
 
 .select_wrapper::after {
@@ -328,11 +329,11 @@ li {
     position: absolute;
     top: 50%;
     right: 16px;
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-right: 2px solid #333;
     border-bottom: 2px solid #333;
-    transform: translateY(-50%) rotate(45deg);
+    transform: translateY(-50%) rotate(45deg); /* ▼ */
     transition: transform 0.3s ease;
     pointer-events: none;
 }
@@ -351,7 +352,7 @@ li {
 }
 
 .select_wrapper.open::after {
-    transform: translateY(-50%) rotate(-135deg);
+    transform: translateY(-50%) rotate(-135deg); /* ▲ */
 }
 
 /* 検索ボタン */
@@ -419,7 +420,7 @@ li {
 
 .sub_categories_list li {
     list-style: none;
-    width: 60%;
+    width: 100%;
     margin-bottom: 10px;
     border-bottom: 1px solid #ddd;
     font-size: 14px;

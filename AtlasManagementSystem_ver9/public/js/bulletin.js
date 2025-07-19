@@ -105,8 +105,7 @@ $(function () {
     });
 
     const $select = $("#main_category");
-    const $wrapper = $select.parent(".select_wrapper");
-    $select.on("click", function (e) {});
+    const $wrapper = $select.closest(".select_wrapper");
 
     $select.on("focus", function () {
         $wrapper.addClass("open");
