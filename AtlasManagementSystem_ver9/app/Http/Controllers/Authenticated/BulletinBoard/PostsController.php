@@ -22,10 +22,19 @@ class PostsController extends Controller
 
         $postsQuery = Post::with(['user', 'postComments'])->withCount('likes');
 
+        // キーワード検索
+        if ($request->filled('keyword')) {
+            $keyword = $request->input('keyword');
+            $postsQuery->where(function ($q) use ($keyword) {
+                $q->where('post_title', 'like', '%' . $keyword . '%')
+                    ->orWhere('post', 'like', '%' . $keyword . '%');
+            });
+        }
+
         // サブカテゴリー検索の修正
         if ($request->filled('sub_category_id')) {
             $subCategoryId = $request->input('sub_category_id');
-            // 中間テーブルから該当する投稿IDを取得
+
             $postIds = \DB::table('post_sub_categories')
                 ->where('sub_category_id', $subCategoryId)
                 ->pluck('post_id');

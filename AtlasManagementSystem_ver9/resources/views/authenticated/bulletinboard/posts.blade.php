@@ -30,14 +30,19 @@
     <div class="other_area w-25">
       <div class="m-4">
         <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a></div>
-        <div class="search_area">
-          <input type="text" placeholder="キーワードを検索" name="keyword" form="postSearchRequest">
-          <input type="submit" value="検索" form="postSearchRequest">
-        </div>
-        <div class="search_posts">
-          <input type="submit" name="like_posts" class="category_btn like_posts" value="いいねした投稿" form="postSearchRequest">
-          <input type="submit" name="my_posts" class="category_btn my_posts" value="自分の投稿" form="postSearchRequest">
-        </div>
+
+        <!-- 検索フォーム -->
+        <form action="{{ route('post.show') }}" method="get" id="postSearchRequest">
+          <div class="search_area">
+            <input type="text" placeholder="キーワードを検索" name="keyword" value="{{ request('keyword') }}">
+            <input type="submit" value="検索">
+          </div>
+          <div class="search_posts">
+            <input type="submit" name="like_posts" class="category_btn like_posts" value="いいねした投稿">
+            <input type="submit" name="my_posts" class="category_btn my_posts" value="自分の投稿">
+          </div>
+        </form>
+
         <div class="category_select_area">
           <label for="main_category">カテゴリー検索</label>
           <div class="select_wrapper">
@@ -64,6 +69,5 @@
         </div>
       </div>
     </div>
-    <form action="{{ route('post.show') }}" method="get" id="postSearchRequest"></form>
   </div>
 </x-sidebar>
