@@ -19,46 +19,60 @@ class PostsController extends Controller
     {
         $categories = MainCategory::with('subCategories')->get();
 
-        $postsQuery = Post::with(['user', 'postComments'])->withCount('likes');
+        // 全投稿を先に取得
+        $posts = Post::with(['user', 'postComments'])->withCount('likes')->get();
 
         // サブカテゴリー検索
         if ($request->filled('sub_category_id')) {
-            $postsQuery->where('sub_category_id', $request->sub_category_id);
+            $subCategory = SubCategory::find($request->sub_category_id);
+            if ($subCategory) {
+                $posts = $posts->filter(function ($post) use ($subCategory) {
+                    return $post->subCategories->contains('id', $subCategory->id);
+                });
+            }
         }
         // キーワード検索
         elseif ($request->filled('keyword')) {
             $keyword = $request->keyword;
 
             $subCategory = SubCategory::where('sub_category', $keyword)->first();
-
             if ($subCategory) {
-                $postsQuery->where('sub_category_id', $subCategory->id);
+                $posts = $posts->filter(function ($post) use ($subCategory) {
+                    return $post->subCategories->contains('id', $subCategory->id);
+                });
             } else {
-                $postsQuery->where(function ($q) use ($keyword) {
-                    $q->where('post_title', 'like', "%{$keyword}%")
-                        ->orWhereHas('user', function ($userQ) use ($keyword) {
-                            $userQ->where('over_name', 'like', "%{$keyword}%")
-                                ->orWhere('under_name', 'like', "%{$keyword}%");
-                        });
+                // サブカテゴリに一致しない → タイトルや本文で通常検索
+                $posts = $posts->filter(function ($post) use ($keyword) {
+                    return str_contains($post->post_title, $keyword)
+                        || str_contains($post->post, $keyword)
+                        || str_contains(optional($post->user)->over_name, $keyword)
+                        || str_contains(optional($post->user)->under_name, $keyword);
                 });
             }
         }
 
-        // いいねした投稿
-        if ($request->filled('like_posts')) {
-            $likePostIds = Auth::user()->likePostId()->pluck('like_post_id');
-            $postsQuery->whereIn('id', $likePostIds);
-        }
-
         // 自分の投稿
         if ($request->filled('my_posts')) {
-            $postsQuery->where('user_id', Auth::id());
+            $posts = $posts->filter(function ($post) {
+                return $post->user_id === Auth::id();
+            });
         }
 
-        $posts = $postsQuery->get();
+        // いいねした投稿
+        if ($request->filled('like_posts')) {
+            $likePostIds = Auth::user()->likePostId()->pluck('like_post_id')->toArray();
+            $posts = $posts->filter(function ($post) use ($likePostIds) {
+                return in_array($post->id, $likePostIds);
+            });
+        }
 
-        return view('authenticated.bulletinboard.posts', compact('posts', 'categories'));
+        return view('authenticated.bulletinboard.posts', [
+            'posts' => $posts,
+            'categories' => $categories,
+            'main_categories' => $categories,
+        ]);
     }
+
 
     // 投稿詳細
     public function postDetail($post_id)
@@ -74,14 +88,23 @@ class PostsController extends Controller
         return view('authenticated.bulletinboard.post_create', compact('main_categories'));
     }
 
-    // 投稿作成
+    // 投稿作成（統合版）
     public function postCreate(PostFormRequest $request)
     {
+        $postBody = $request->post_body;
+
+        // サブカテゴリーが選択されている場合、本文に追加
+        if ($request->filled('sub_category_id')) {
+            $subCategory = SubCategory::find($request->sub_category_id);
+            if ($subCategory) {
+                $postBody = "#Category:{$subCategory->sub_category}\n\n" . $postBody;
+            }
+        }
+
         Post::create([
-            'user_id'         => Auth::id(),
-            'post_title'      => $request->post_title,
-            'post'            => $request->post_body,
-            'sub_category_id' => $request->sub_category_id,
+            'user_id'    => Auth::id(),
+            'post_title' => $request->post_title,
+            'post'       => $postBody,
         ]);
 
         return redirect()->route('post.show');
@@ -183,7 +206,7 @@ class PostsController extends Controller
             ]);
         }
 
-        $likeCount = Like::where('like_post_id', $post_id)->count();
+        $likeCount = Like::where('like_post_id', $request->post_id)->count();
 
         return response()->json(['like_count' => $likeCount]);
     }
