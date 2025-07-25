@@ -6,18 +6,6 @@
           <div class="detail_inner_head">
             <div>
             </div>
-            <div>
-              @if (Auth::id() === $post->user_id)
-              <button type="button" class="btn btn-primary edit-modal-open"
-                data-post-title="{{ $post->post_title }}"
-                data-post-body="{{ $post->post }}"
-                data-post-id="{{ $post->id }}">
-                編集
-              </button>
-              <button class="btn btn-danger delete-modal-open" data-post-id="{{ $post->id }}"
-                data-delete-url="{{ route('posts.delete', $post->id) }}">削除</button>
-              @endif
-            </div>
             <!-- 削除モーダル -->
             <div class="modal delete-modal js-delete-modal" style="display: none;">
               <div class="modal__bg js-delete-modal-close"></div>
@@ -39,13 +27,30 @@
             </div>
           </div>
 
-          <div class="contributor d-flex">
-            <p>
-              <span>{{ $post->user->over_name }}</span>
-              <span>{{ $post->user->under_name }}</span>
-              さん
-            </p>
-            <span class="ml-5">{{ $post->created_at }}</span>
+          <div class="contributor d-flex justify-content-between align-items-center">
+            <!--投稿タイトル -->
+            <div class="my-post">
+              <div class="post_title_oval" style="background-color: #03aad2; color: white; border-radius: 50px; padding: 8px 20px; margin-bottom: 10px; display: inline-block; font-weight: bold;">
+                {{ $post->post_title }}
+              </div>
+            </div>
+
+            <!-- 編集・削除ボタン -->
+            @if (Auth::id() === $post->user_id)
+            <div class="post-actions">
+              <button type="button" class="btn btn-primary edit-modal-open"
+                data-post-title="{{ $post->post_title }}"
+                data-post-body="{{ $post->post }}"
+                data-post-id="{{ $post->id }}">
+                編集
+              </button>
+              <button class="btn btn-danger delete-modal-open"
+                data-post-id="{{ $post->id }}"
+                data-delete-url="{{ route('posts.delete', $post->id) }}">
+                削除
+              </button>
+            </div>
+            @endif
           </div>
           <div class="detsail_post_title">{{ $post->post_title }}</div>
           <div class="mt-3 detsail_post">{{ $post->post }}</div>

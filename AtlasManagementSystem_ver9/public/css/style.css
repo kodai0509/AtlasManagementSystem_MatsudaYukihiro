@@ -209,6 +209,10 @@ li {
     justify-content: space-between;
 }
 
+.my-post {
+    display: flex;
+}
+
 /* 掲示板 コメント */
 .comment_container {
     background: #fff;

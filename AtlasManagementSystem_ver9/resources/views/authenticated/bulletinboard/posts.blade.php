@@ -29,7 +29,8 @@
     </div>
     <div class="other_area w-25">
       <div class="m-4">
-        <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a></div>
+        <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a>
+        </div>
 
         <!-- 検索フォーム -->
         <form action="{{ route('post.show') }}" method="get" id="postSearchRequest">
