@@ -11,6 +11,7 @@ use App\Models\Posts\PostComment;
 use App\Models\Posts\Like;
 use App\Http\Requests\BulletinBoard\PostFormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
@@ -21,12 +22,14 @@ class PostsController extends Controller
 
         $postsQuery = Post::with(['user', 'postComments'])->withCount('likes');
 
-        // サブカテゴリー検索(エラーはないが何も表示されない)
+        // サブカテゴリー検索の修正
         if ($request->filled('sub_category_id')) {
             $subCategoryId = $request->input('sub_category_id');
-            $postsQuery->whereHas('subCategories', function ($q) use ($subCategoryId) {
-                $q->where('sub_categories.id', $subCategoryId);
-            });
+            // 中間テーブルから該当する投稿IDを取得
+            $postIds = \DB::table('post_sub_categories')
+                ->where('sub_category_id', $subCategoryId)
+                ->pluck('post_id');
+            $postsQuery->whereIn('id', $postIds);
         }
 
         // いいねした投稿

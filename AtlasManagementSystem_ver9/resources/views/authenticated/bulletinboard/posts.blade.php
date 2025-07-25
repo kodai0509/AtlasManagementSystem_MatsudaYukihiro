@@ -62,7 +62,6 @@
           </ul>
           @endforeach
         </div>
-
       </div>
     </div>
     <form action="{{ route('post.show') }}" method="get" id="postSearchRequest"></form>
