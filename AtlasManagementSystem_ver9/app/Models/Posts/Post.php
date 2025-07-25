@@ -42,42 +42,8 @@ class Post extends Model
         return $this->likes()->count();
     }
 
-    // 投稿からサブカテゴリーを抽出
-    public function getSubCategoriesAttribute()
+    public function subCategories()
     {
-        $categories = [];
-
-        // 本文からカテゴリー情報を抽出
-        if (preg_match_all('/#Category:([^\n\r]+)/', $this->post, $matches)) {
-            foreach ($matches[1] as $categoryName) {
-                $subCategory = SubCategory::where('sub_category', trim($categoryName))->first();
-                if ($subCategory) {
-                    $categories[] = $subCategory;
-                }
-            }
-        }
-
-        // タイトルからカテゴリー情報を抽出
-        if (preg_match_all('/\[([^\]]+)\]/', $this->post_title, $matches)) {
-            foreach ($matches[1] as $categoryName) {
-                $subCategory = SubCategory::where('sub_category', trim($categoryName))->first();
-                if ($subCategory && !in_array($subCategory, $categories)) {
-                    $categories[] = $subCategory;
-                }
-            }
-        }
-
-        return collect($categories);
-    }
-
-    // 表示用の本文（カテゴリー情報を除去）
-    public function getCleanPostAttribute()
-    {
-        $cleanPost = $this->post;
-
-        // カテゴリー情報を除去
-        $cleanPost = preg_replace('/#Category:[^\n\r]+\n*/', '', $cleanPost);
-
-        return trim($cleanPost);
+        return $this->belongsToMany(\App\Models\Categories\SubCategory::class, 'post_sub_categories', 'post_id', 'sub_category_id');
     }
 }
