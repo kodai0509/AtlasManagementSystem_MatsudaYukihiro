@@ -284,12 +284,12 @@ li {
 .reserve_users_area {
     display: flex;
     flex-wrap: wrap;
-    width: 800px;
-    margin: 10px auto;
+    width: 100%;
+    margin-left: 10px auto;
     height: 80vh;
     overflow: scroll;
     padding: 10px;
-    background: #fff;
+    background: #eee;
     border-radius: 5px;
 }
 
@@ -298,8 +298,14 @@ li {
 }
 
 .one_person {
-    width: 250px;
+    flex: 0 1 calc(25% - 10px); /*4人ごとに改行*/
+    background: #f5f5f5;
+    padding: 10px;
+    margin-left: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     height: 250px;
+    background-color: #fff;
 }
 
 .search_conditions span {
@@ -446,6 +452,7 @@ li {
     flex-direction: column;
     padding-top: 10px;
     gap: 10px;
+    padding-left: 20px;
 }
 
 .search-field {
@@ -459,8 +466,19 @@ li {
     border-radius: 5px;
     padding: 4px;
     background-color: #eee;
+    max-width: 100px;
 }
 
+input.free_word {
+    background-color: #eee;
+    width: 100%;
+    max-width: 260px;
+    height: 38px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 .search_conditions {
     position: relative;
     display: inline-block;

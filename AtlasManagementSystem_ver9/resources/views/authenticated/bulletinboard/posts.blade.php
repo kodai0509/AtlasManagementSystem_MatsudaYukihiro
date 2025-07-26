@@ -31,7 +31,6 @@
       <div class="m-4">
         <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a>
         </div>
-
         <!-- 検索フォーム -->
         <form action="{{ route('post.show') }}" method="get" id="postSearchRequest">
           <div class="search_area">
@@ -43,7 +42,6 @@
             <input type="submit" name="my_posts" class="category_btn my_posts" value="自分の投稿">
           </div>
         </form>
-
         <div class="category_select_area">
           <label for="main_category">カテゴリー検索</label>
           <div class="select_wrapper">

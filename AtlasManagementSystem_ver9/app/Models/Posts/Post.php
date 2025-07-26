@@ -46,7 +46,7 @@ class Post extends Model
     {
         return $this->belongsToMany(
             SubCategory::class,
-            'post_sub_categories', // 中間テーブル名
+            'post_sub_categories',
             'post_id',
             'sub_category_id'
         );
