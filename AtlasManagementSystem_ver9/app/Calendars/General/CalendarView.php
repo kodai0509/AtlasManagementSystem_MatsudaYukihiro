@@ -52,10 +52,10 @@ class CalendarView
         }
 
         $startDay = $this->carbon->copy()->format("Y-m-01");
-        $toDay = $this->carbon->copy()->format("Y-m-d");
+        $today = now()->format("Y-m-d");
 
-        $html[] = ($startDay <= $day->everyDay() && $toDay >= $day->everyDay())
-          ? '<td class="calendar-td">'
+        $html[] = ($startDay <= $day->everyDay() && $today >= $day->everyDay())
+          ? '<td class="calendar-td past-day">'
           : '<td class="calendar-td ' . $day->getClassName() . '">';
 
         $html[] = $day->render();

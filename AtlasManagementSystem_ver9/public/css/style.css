@@ -76,14 +76,28 @@ li {
     color: #ff0000;
 }
 
-.past-day {
+/* 過去日の背景をグレーに */
+.calendar-td.past-day {
     background: #eee;
 }
 
 .calendar-td {
-    min-width: 100px;
+    min-width: 100%;
 }
 
+.calendar-wrapper {
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.calendar-wrapper table {
+    border-collapse: collapse; /* ボーダーを重ねずスッキリ見せる */
+}
+
+.calendar-wrapper th,
+.calendar-wrapper td {
+    border: 1px solid #ccc;
+}
 .day_part {
     color: #494949;
     font-size: 12px;
@@ -514,8 +528,9 @@ input.free_word {
 }
 
 /* 予約表 */
+/* admin */
 .past-day {
-    background-color: #d3d3d3;
+    background-color: #eee !important;
 }
 .no-reserve {
     color: red;
@@ -527,6 +542,7 @@ input.free_word {
     position: relative;
     min-height: 80px;
     overflow: visible;
+    white-space: nowrap;
 }
 
 .cancel-btn {
@@ -535,4 +551,12 @@ input.free_word {
     width: 100%;
     white-space: normal;
     word-wrap: break-word;
+}
+
+.table tbody tr:nth-child(odd) td {
+    background-color: #fff !important;
+}
+
+.table tbody tr:nth-child(even) td {
+    background-color: #e5f6fa !important;
 }
