@@ -25,7 +25,7 @@
         <div class="sidebar">
             <p style="margin-top: 10px;">
                 <a href="{{ route('top.show') }}">
-                    <img src="{{ asset('image/home_6500368.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">トップ</a>
+                    <img src="{{ asset('image/home_6500368.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">マイページ</a>
             </p>
             <p>
                 <a href="/logout"><img src="{{ asset('image/export_10152177.png') }}" style="width:20px; height:20px; margin-right:5px; filter: brightness(0) invert(1);">ログアウト</a>
