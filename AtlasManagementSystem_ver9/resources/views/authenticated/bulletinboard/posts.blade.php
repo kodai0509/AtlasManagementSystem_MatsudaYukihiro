@@ -4,29 +4,48 @@
       @foreach($posts as $post)
       <div class="post_area border w-75 m-auto p-3">
         <p><span>{{ $post->user->over_name }}</span><span class="ml-3">{{ $post->user->under_name }}</span>さん</p>
-        <p><a href="{{ route('post.detail', ['id' => $post->id]) }}">{{ $post->post_title }}</a></p>
-        <div class="post_bottom_area d-flex">
-          <div class="d-flex post_status">
-            <div class="mr-5">
-              <i class="fa fa-comment"></i><span class="">{{ $post->commentCount() }}</span>
+
+        <!-- 投稿タイトル -->
+        <a href="{{ route('post.detail', ['id' => $post->id]) }}"
+          style="font-weight: bold; color: black; text-decoration: none; display: inline-block; margin-bottom: 6px;">
+          {{ $post->post_title }}
+        </a>
+
+        <div class="post_bottom d-flex justify-content-between align-items-center">
+          <!-- サブカテゴリー -->
+          <div class="d-flex flex-wrap" style="gap: 5px;">
+            @if($post->subCategories->isNotEmpty())
+            @foreach($post->subCategories as $subCategory)
+            <span class="sub-category-badge">{{ $subCategory->sub_category }}</span>
+            @endforeach
+            @endif
+          </div>
+
+          <!-- いいね・コメント -->
+          <div class="d-flex" style="gap: 15px; white-space: nowrap; align-items: center;">
+            <div style="display: flex; align-items: center;">
+              <i class="fa fa-comment"></i><span>{{ $post->commentCount() }}</span>
             </div>
-            <div>
+            <div style="display: flex; align-items: center;">
               @if(Auth::user()->is_Like($post->id))
-              <p class="m-0"><i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i><span class="like_counts{{ $post->id }}">
-                  {{ $post->likes_count ?? 0 }}
-                </span></p>
+              <p class="m-0" style="display: flex; align-items: center;">
+                <i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i>
+                <span class="like_counts{{ $post->id }}" style="margin-left: 4px;">{{ $post->likes_count ?? 0 }}</span>
+              </p>
               @else
-              <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i><span class="like_counts{{ $post->id }}">
-                  {{ $post->likes_count ?? 0 }}
-                </span></p>
+              <p class="m-0" style="display: flex; align-items: center;">
+                <i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i>
+                <span class="like_counts{{ $post->id }}" style="margin-left: 4px;">{{ $post->likes_count ?? 0 }}</span>
+              </p>
               @endif
             </div>
           </div>
         </div>
-
       </div>
+
       @endforeach
     </div>
+
     <div class="other_area w-25">
       <div class="m-4">
         <div class="post_btn"><a href="{{ route('post.input') }}" style="color: #FFFFFF;">投稿 </a>

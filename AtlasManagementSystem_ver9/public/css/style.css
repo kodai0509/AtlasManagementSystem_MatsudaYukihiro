@@ -407,7 +407,7 @@ li {
     margin-bottom: 10px;
     width: 200px;
     height: 30px;
-    gap: 10px;
+    /* gap: 10px; */
 }
 
 .like_posts {
@@ -420,6 +420,15 @@ li {
     background-color: #ffbe00;
 }
 
+.sub-category-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 15px;
+    background-color: #03aad2;
+    color: #e6e6e6;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
 /*カテゴリー検索 */
 
 .category_select_area {
