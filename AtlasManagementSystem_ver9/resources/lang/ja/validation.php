@@ -96,7 +96,7 @@ return [
     'password' => 'The password is incorrect.',
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
-    'required' => 'コメントは必ず入力してください.',
+    'required' => ':attribute は必ず入力してください。',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
@@ -129,11 +129,81 @@ return [
     |
     */
 
+    'attributes' => [
+        'over_name' => '姓',
+        'under_name' => '名',
+        'over_name_kana' => '姓（カナ）',
+        'under_name_kana' => '名（カナ）',
+        'mail_address' => 'メールアドレス',
+        'sex' => '性別',
+        'old_year' => '生年',
+        'old_month' => '月',
+        'old_day' => '日',
+        'role' => '役職',
+        'password' => 'パスワード',
+        'password_confirmation' => '確認用パスワード',
+    ],
+
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'over_name' => [
+            'required' => '名前は必ず入力してください。',
+            'max' => '姓は10文字以下で入力してください。',
+        ],
+        'under_name' => [
+            'required' => '名は必ず入力してください。',
+            'max' => '名は10文字以下で入力してください。',
+        ],
+        'over_name_kana' => [
+            'required' => '姓（カナ）は必ず入力してください。',
+            'regex' => '姓（カナ）はカタカナで入力してください。',
+            'max' => '姓（カナ）は30文字以下で入力してください。',
+        ],
+        'under_name_kana' => [
+            'required' => '名（カナ）は必ず入力してください。',
+            'regex' => '名（カナ）はカタカナで入力してください。',
+            'max' => '名（カナ）は30文字以下で入力してください。',
+        ],
+        'mail_address' => [
+            'required' => 'メールアドレスは必ず入力してください。',
+            'email' => '正しいメールアドレス形式で入力してください。',
+            'max' => 'メールアドレスは100文字以下で入力してください。',
+            'unique' => '登録済みのメールアドレスです。',
+        ],
+        'sex' => [
+            'required' => '性別は必ず選択してください。',
+        ],
+        'old_year' => [
+            'required' => '生年月日は必ず入力してください。',
+            'min' => '2000年以降を入力してください。',
+            'max' => '未来の日付は選べません。',
+            'not_in' => '年を選択してください。',
+        ],
+        'old_month' => [
+            'required' => '生年月日は必ず入力してください。',
+            'min' => '月は1以上で入力してください。',
+            'max' => '月は12以下で入力してください。',
+            'not_in' => '月を選択してください。',
+        ],
+        'old_day' => [
+            'required' => '生年月日は必ず入力してください。',
+            'min' => '日付は1以上で入力してください。',
+            'max' => '日付は31以下で入力してください。',
+            'not_in' => '日を選択してください。',
+        ],
+        'role' => [
+            'required' => '役職は必ず選択してください。',
+        ],
+        'password' => [
+            'required' => 'パスワードは必ず入力してください。',
+            'min' => 'パスワードは8文字以上で入力してください。',
+            'max' => 'パスワードは30文字以下で入力してください。',
+            'confirmed' => 'パスワード確認が一致しません。',
+        ],
+        'password_confirmation' => [
+            'required' => '確認用パスワードを入力してください。',
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -145,7 +215,4 @@ return [
     | of "email". This simply helps us make our message more expressive.
     |
     */
-
-    'attributes' => ['comment' => 'コメント',],
-
 ];
