@@ -44,41 +44,41 @@
     @can('admin')
     <div class="w-25 ml-auto mr-auto">
       <div class="category_area mt-5 p-5">
-        <div>
+        <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
+          @csrf
+          @if($errors->has('main_category_name'))
+          <span class="text-danger">{{ $errors->first('main_category_name') }}</span>
+          @endif
           <p class="m-0">メインカテゴリー</p>
-          <input type="text" class="w-100" name="main_category_name" form="mainCategoryRequest">
-          <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
-        </div>
+          <input type="text" class="w-100" name="main_category_name">
+          <input type="submit" value="追加" class="w-100 btn btn-primary p-0">
+        </form>
 
         @if (Auth::user()->role === 1)
+        <!-- サブカテゴリー -->
         <div class="mt-5">
-          <p class="m-0">サブカテゴリー</p>
-
-          <select name="main_category_id" class="w-100 mb-2" form="subCategoryRequest">
-            @foreach($main_categories as $main_category)
-            <option value="{{ $main_category->id }}">{{ $main_category->main_category }}</option>
-            @endforeach
-          </select>
-
-          <!-- サブカテゴリー -->
-          <input type="text" class="w-100 mb-2" name="sub_category_name" form="subCategoryRequest" placeholder="サブカテゴリー名">
-
           @if ($errors->has('sub_category_name'))
           <span class="text-danger">{{ $errors->first('sub_category_name') }}</span>
           @endif
-
+          <p class="m-0">サブカテゴリー</p>
+          <select name="main_category_id" class="category_input" form="subCategoryRequest">
+            <option selected disabled>----</option>
+            @foreach($main_categories as $main_category)
+            <option value="{{ $main_category->id }}">
+              {{ $main_category->main_category }}
+            </option>
+            @endforeach
+          </select>
+          <input type="text" name="sub_category_name" class="category_input" form="subCategoryRequest">
           <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
-
           <form action="{{ route('sub.category.create') }}" method="post" id="subCategoryRequest">
             @csrf
           </form>
         </div>
         @endif
-
         <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
           @csrf
         </form>
-
       </div>
     </div>
     @endcan

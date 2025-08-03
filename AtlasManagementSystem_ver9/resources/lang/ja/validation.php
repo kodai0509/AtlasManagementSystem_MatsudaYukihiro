@@ -142,6 +142,8 @@ return [
         'role' => '役職',
         'password' => 'パスワード',
         'password_confirmation' => '確認用パスワード',
+        'main_category_name' => 'メインカテゴリー',
+        'sub_category_name' => 'サブカテゴリー',
     ],
 
     'custom' => [

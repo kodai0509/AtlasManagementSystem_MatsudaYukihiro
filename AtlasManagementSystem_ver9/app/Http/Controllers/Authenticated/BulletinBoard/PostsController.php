@@ -121,10 +121,29 @@ class PostsController extends Controller
         return redirect()->route('post.show');
     }
 
-    // メインカテゴリ作成
+    // メインカテゴリ作成(教師アカウント)
     public function mainCategoryCreate(Request $request)
     {
+        $request->validate([
+            'main_category_name' => 'required|string|max:255',
+        ]);
+
         MainCategory::create(['main_category' => $request->main_category_name]);
+
+        return redirect()->route('post.input');
+    }
+    public function subCategoryCreate(Request $request)
+    {
+        $request->validate([
+            'main_category_id' => 'required|exists:main_categories,id',
+            'sub_category_name' => 'required|string|max:255',
+        ]);
+
+        \App\Models\Categories\SubCategory::create([
+            'main_category_id' => $request->main_category_id,
+            'sub_category' => $request->sub_category_name,
+        ]);
+
         return redirect()->route('post.input');
     }
 
