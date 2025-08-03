@@ -1,6 +1,6 @@
 <x-sidebar>
   <div class="post_create_container d-flex">
-    <div class="post_create_area border w-50 m-5 p-5">
+    <div class="post_create_area border w-75 m-5 p-5">
       <form action="{{ route('post.create') }}" method="post" id="postCreate">
         @csrf
         <div>
@@ -42,12 +42,12 @@
     </div>
 
     @can('admin')
-    <div class="w-25 ml-auto mr-auto">
-      <div class="category_area mt-5 p-5">
-        <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
+    <div class="w-45 ml-auto mr-auto">
+      <div class="category_area mt-5 p-5" style="margin-right: 20px;">
+        <form action=" {{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
           @csrf
           @if($errors->has('main_category_name'))
-          <span class="text-danger">{{ $errors->first('main_category_name') }}</span>
+          <span class="text-danger" style="white-space: nowrap;">{{ $errors->first('main_category_name') }}</span>
           @endif
           <p class="m-0">メインカテゴリー</p>
           <input type="text" class="w-100" name="main_category_name">
@@ -58,7 +58,7 @@
         <!-- サブカテゴリー -->
         <div class="mt-5">
           @if ($errors->has('sub_category_name'))
-          <span class="text-danger">{{ $errors->first('sub_category_name') }}</span>
+          <span class="text-danger" style="white-space: nowrap;">{{ $errors->first('sub_category_name') }}</span>
           @endif
           <p class="m-0">サブカテゴリー</p>
           <select name="main_category_id" class="category_input" form="subCategoryRequest">

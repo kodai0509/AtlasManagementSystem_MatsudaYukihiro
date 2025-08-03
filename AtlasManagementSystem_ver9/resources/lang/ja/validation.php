@@ -144,6 +144,7 @@ return [
         'password_confirmation' => '確認用パスワード',
         'main_category_name' => 'メインカテゴリー',
         'sub_category_name' => 'サブカテゴリー',
+        'comment' => 'コメント',
     ],
 
     'custom' => [

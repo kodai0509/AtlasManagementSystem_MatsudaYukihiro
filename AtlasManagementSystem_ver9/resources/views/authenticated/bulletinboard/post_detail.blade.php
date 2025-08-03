@@ -30,9 +30,11 @@
           <div class="contributor d-flex justify-content-between align-items-center">
             <!--投稿タイトル -->
             <div class="my-post">
+              @foreach($post->subCategories as $subCategory)
               <div class="post_title_oval" style="background-color: #03aad2; color: white; border-radius: 50px; padding: 8px 20px; margin-bottom: 10px; display: inline-block; font-weight: bold;">
-                {{ $post->post_title }}
+                {{ $subCategory->sub_category }}
               </div>
+              @endforeach
             </div>
 
             <!-- 編集・削除ボタン -->
@@ -52,8 +54,8 @@
             </div>
             @endif
           </div>
-          <div class="detsail_post_title">{{ $post->post_title }}</div>
-          <div class="mt-3 detsail_post">{{ $post->post }}</div>
+          <div class="detail_post_title">{{ $post->post_title }}</div>
+          <div class="mt-3 detail_post">{{ $post->post }}</div>
         </div>
         <div class="p-3">
           <div class="p-3">
@@ -97,21 +99,22 @@
     <div class="modal__bg js-modal-close"></div>
     <div class="modal__content">
       <form action="{{ route('post.edit') }}" method="post">
+        {{ csrf_field() }}
         <div class="w-100">
           <div class="modal-inner-title w-50 m-auto">
-            <input type="text" name="post_title" placeholder="タイトル" class="w-100">
+            <input type="text" name="post_title" placeholder="タイトル" class="w-100" value="">
           </div>
           <div class="modal-inner-body w-50 m-auto pt-3 pb-3">
             <textarea placeholder="投稿内容" name="post_body" class="w-100"></textarea>
           </div>
           <div class="w-50 m-auto edit-modal-btn d-flex">
-            <a class="js-modal-close btn btn-danger d-inline-block" href="">閉じる</a>
+            <a class="js-modal-close btn btn-danger d-inline-block" href="#">閉じる</a>
             <input type="hidden" class="edit-modal-hidden" name="post_id" value="">
             <input type="submit" class="btn btn-primary d-block" value="編集">
           </div>
         </div>
-        {{ csrf_field() }}
       </form>
     </div>
   </div>
+
 </x-sidebar>

@@ -60,8 +60,13 @@ class PostsController extends Controller
     // 投稿詳細
     public function postDetail($post_id)
     {
-        $post = Post::with(['user', 'postComments'])->withCount('likes')->findOrFail($post_id);
-        return view('authenticated.bulletinboard.post_detail', compact('post'));
+        $post = Post::with(['user', 'postComments', 'subCategories'])
+            ->withCount('likes')
+            ->findOrFail($post_id);
+
+        $main_categories = MainCategory::with('subCategories')->get();
+
+        return view('authenticated.bulletinboard.post_detail', compact('post', 'main_categories'));
     }
 
     // 投稿作成フォーム
@@ -92,7 +97,9 @@ class PostsController extends Controller
     {
         $request->validate([
             'post_title' => 'required|string|max:100',
-            'post_body'  => 'required|string|max:2000',
+            'post_body' => 'required|string|max:2000',
+            // 'sub_category_id' => 'required|array',
+            // 'sub_category_id.*' => 'exists:sub_categories,id',
         ]);
 
         $post = Post::where('id', $request->post_id)
@@ -104,12 +111,24 @@ class PostsController extends Controller
             'post'       => $request->post_body,
         ]);
 
-        $subCategoryIds = is_array($request->sub_category_id) ? $request->sub_category_id : [$request->sub_category_id];
-        $post->subCategories()->sync($subCategoryIds);
+        // $post->subCategories()->sync($request->sub_category_id);
+        if ($request->has('sub_category_id') && !empty($request->sub_category_id)) {
+            $subCategoryIds = is_array($request->sub_category_id) ? $request->sub_category_id : [$request->sub_category_id];
+            $post->subCategories()->sync($subCategoryIds);
+        }
 
         return redirect()->route('post.detail', ['id' => $post->id]);
     }
 
+
+    public function rules()
+    {
+        return [
+            'sub_category_id' => 'required|integer|exists:sub_categories,id',
+            'post_title' => 'required|string|max:100',
+            'post_body' => 'required|string|max:2000',
+        ];
+    }
 
     // 投稿削除
     public function postDelete($id)
@@ -137,6 +156,7 @@ class PostsController extends Controller
         $request->validate([
             'main_category_id' => 'required|exists:main_categories,id',
             'sub_category_name' => 'required|string|max:255',
+
         ]);
 
         \App\Models\Categories\SubCategory::create([
@@ -146,6 +166,7 @@ class PostsController extends Controller
 
         return redirect()->route('post.input');
     }
+
 
     // コメント作成
     public function commentCreate(Request $request)
@@ -166,14 +187,15 @@ class PostsController extends Controller
     // 自分の投稿一覧
     public function myBulletinBoard()
     {
-        $posts = Auth::user()->posts()
-            ->with(['user', 'postComments'])
+        $posts = Post::with(['user', 'postComments', 'subCategories'])
+            ->where('user_id', Auth::id())
             ->withCount('likes')
             ->get();
 
         $like = new Like;
         return view('authenticated.bulletinboard.post_myself', compact('posts', 'like'));
     }
+
 
     // いいねした投稿一覧
     public function likeBulletinBoard()

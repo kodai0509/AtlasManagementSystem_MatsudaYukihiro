@@ -24,12 +24,14 @@ class PostFormRequest extends FormRequest
     public function rules()
     {
         return [
+            'sub_category_id' => 'required|integer|exists:sub_categories,id',
             'post_title' => 'required|string|max:100',
             'post_body' => 'required|string|max:2000',
         ];
     }
 
-    public function messages(){
+    public function messages()
+    {
         return [
             'post_title.required' => 'タイトルは必ず入力してください。',
             'post_title.string' => 'タイトルは文字列である必要があります。',
