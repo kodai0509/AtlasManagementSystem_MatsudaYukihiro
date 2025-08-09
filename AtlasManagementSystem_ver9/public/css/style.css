@@ -310,22 +310,32 @@ li {
     flex-wrap: wrap;
     width: 100%;
     margin-left: 10px auto;
-    height: 80vh;
+    height: 100vh;
     overflow: scroll;
     padding: 10px;
     background: #eee;
     border-radius: 5px;
+    gap: 10px 20px;
 }
 
+.profile_name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-bottom: 40px;
+    /* font-weight: bold; */
+    white-space: nowrap;
+    color: #000;
+}
 .reserve_users_area span {
     font-size: 12px;
 }
 
 .one_person {
-    flex: 0 1 calc(25% - 10px); /*4人ごとに改行*/
+    width: calc((100% - 60px) / 4);
     background: #f5f5f5;
     padding: 10px;
-    margin-left: 20px;
+
     border-radius: 5px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     height: 250px;
@@ -343,12 +353,13 @@ li {
 
 .subject_edit_btn {
     font-size: 12px;
-    color: #0000ff;
+    color: #42badb;
     cursor: pointer;
 }
 
-.subject_inner {
-    display: none;
+.subject_inner form {
+    display: flex;
+    gap: 10px;
 }
 
 /* 検索フォームの矢印 */
@@ -367,7 +378,7 @@ li {
     height: 10px;
     border-right: 2px solid #333;
     border-bottom: 2px solid #333;
-    transform: translateY(-50%) rotate(45deg); /* ▼ */
+    transform: translateY(-50%) rotate(45deg);
     transition: transform 0.3s ease;
     pointer-events: none;
 }
@@ -542,8 +553,48 @@ input.free_word {
     padding-bottom: 10px;
 }
 
+/* 選択科目編集の矢印 */
 .search_conditions_inner {
-    background-color: #eee;
+    background-color: #ecf1f6;
+}
+
+.user_status div span.subject-tag {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 2px 6px;
+    background-color: #03aad2;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.subject_edit_btn_wrapper {
+    position: relative;
+    display: inline-block;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.subject_edit_btn_wrapper .arrow_icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #42badb;
+    border-bottom: 2px solid #42badb;
+    transform: translateY(-50%) rotate(45deg);
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+/* 開いたときに回転 */
+.arrow_icon.open::after {
+    transform: translateY(-50%) rotate(-135deg);
+}
+.open .arrow_icon {
+    transform: translateY(-50%) rotate(-135deg);
+    border-right: 2px solid #42badb;
+    border-bottom: 2px solid #42badb;
 }
 
 /* 予約表 */

@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
             'old_day' => ['required', 'integer', 'min:1', 'max:31', 'not_in:none'],
             'role' => ['required', Rule::in([1, 2, 3, 4])],
             'password' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
-            'password_confirmation' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
+            'password_confirmation' => ['required', 'string', 'min:8', 'max:30'],
         ]);
 
         // 日付チェック
