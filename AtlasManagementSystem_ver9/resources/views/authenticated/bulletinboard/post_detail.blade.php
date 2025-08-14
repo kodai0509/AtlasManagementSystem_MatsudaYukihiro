@@ -4,8 +4,8 @@
       <div class="m-3 detail_container">
         <div class="p-3">
           <div class="detail_inner_head">
-            <div>
-            </div>
+            <div></div>
+
             <!-- 削除モーダル -->
             <div class="modal delete-modal js-delete-modal" style="display: none;">
               <div class="modal__bg js-delete-modal-close"></div>
@@ -54,13 +54,15 @@
             </div>
             @endif
           </div>
+
           <div class="detail_post_title">{{ $post->post_title }}</div>
           <div class="mt-3 detail_post">{{ $post->post }}</div>
         </div>
+
         <div class="p-3">
           <div class="p-3">
             <div class="comment_container">
-              <span class="">コメント ({{ $post->postComments->count() }}件)</span>
+              <span>コメント ({{ $post->postComments->count() }}件)</span>
               @foreach($post->postComments as $comment)
               <div class="comment_area border-top">
                 <p>
@@ -75,11 +77,11 @@
         </div>
       </div>
     </div>
+
     <div class="w-50 p-3">
       <div class="comment_container border m-5">
         <div class="comment_area p-3">
           <p class="m-0">コメントする</p>
-          <!-- バリデーションエラー -->
           @if ($errors->has('comment'))
           <div class="alert alert-danger">
             @foreach ($errors->get('comment') as $message)
@@ -95,21 +97,30 @@
       </div>
     </div>
   </div>
+
+  <!-- 編集モーダル -->
   <div class="modal js-modal">
     <div class="modal__bg js-modal-close"></div>
     <div class="modal__content">
       <form action="{{ route('post.edit') }}" method="post">
         {{ csrf_field() }}
+
         <div class="w-100">
           <div class="modal-inner-title w-50 m-auto">
-            <input type="text" name="post_title" placeholder="タイトル" class="w-100" value="">
+            @if ($errors->has('post_title'))
+            <p class="text-danger">{{ $errors->first('post_title') }}</p>
+            @endif
+            <input type="text" name="post_title" placeholder="タイトル" class="w-100" value="{{ old('post_title') }}">
           </div>
           <div class="modal-inner-body w-50 m-auto pt-3 pb-3">
-            <textarea placeholder="投稿内容" name="post_body" class="w-100"></textarea>
+            @if ($errors->has('post_body'))
+            <p class="text-danger">{{ $errors->first('post_body') }}</p>
+            @endif
+            <textarea placeholder="投稿内容" name="post_body" class="w-100">{{ old('post_body') }}</textarea>
           </div>
           <div class="w-50 m-auto edit-modal-btn d-flex">
             <a class="js-modal-close btn btn-danger d-inline-block" href="#">閉じる</a>
-            <input type="hidden" class="edit-modal-hidden" name="post_id" value="">
+            <input type="hidden" class="edit-modal-hidden" name="post_id" value="{{ old('post_id') }}">
             <input type="submit" class="btn btn-primary d-block" value="編集">
           </div>
         </div>
@@ -117,4 +128,12 @@
     </div>
   </div>
 
+  @if ($errors->any())
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const modal = document.querySelector('.js-modal');
+      if (modal) modal.style.display = 'block';
+    });
+  </script>
+  @endif
 </x-sidebar>

@@ -145,6 +145,8 @@ return [
         'main_category_name' => 'メインカテゴリー',
         'sub_category_name' => 'サブカテゴリー',
         'comment' => 'コメント',
+        'post title' => 'タイトル',
+        'post_body' => '投稿内容',
     ],
 
     'custom' => [
@@ -204,6 +206,16 @@ return [
         ],
         'password_confirmation' => [
             'required' => '確認用パスワードを入力してください。',
+        ],
+        'post_title' => [
+            'required' => 'タイトルは必ず入力してください。',
+            'string'   => 'タイトルは文字列で入力してください。',
+            'max'      => 'タイトルは100文字以内で入力してください。',
+        ],
+        'post_body' => [
+            'required' => '投稿内容は必ず入力してください。',
+            'string'   => '投稿内容は文字列で入力してください。',
+            'max'      => '投稿内容は2000文字以内で入力してください。',
         ],
     ],
 

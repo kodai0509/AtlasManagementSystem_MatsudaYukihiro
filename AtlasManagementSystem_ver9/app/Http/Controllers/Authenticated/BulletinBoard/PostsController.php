@@ -95,23 +95,21 @@ class PostsController extends Controller
     // 投稿編集
     public function postEdit(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'post_title' => 'required|string|max:100',
             'post_body' => 'required|string|max:2000',
-            // 'sub_category_id' => 'required|array',
-            // 'sub_category_id.*' => 'exists:sub_categories,id',
         ]);
 
+        // バリデーション通過後の更新処理
         $post = Post::where('id', $request->post_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
         $post->update([
-            'post_title' => $request->post_title,
-            'post'       => $request->post_body,
+            'post_title' => $validated['post_title'],
+            'post'       => $validated['post_body'],
         ]);
 
-        // $post->subCategories()->sync($request->sub_category_id);
         if ($request->has('sub_category_id') && !empty($request->sub_category_id)) {
             $subCategoryIds = is_array($request->sub_category_id) ? $request->sub_category_id : [$request->sub_category_id];
             $post->subCategories()->sync($subCategoryIds);
@@ -119,6 +117,7 @@ class PostsController extends Controller
 
         return redirect()->route('post.detail', ['id' => $post->id]);
     }
+
 
 
     public function rules()
