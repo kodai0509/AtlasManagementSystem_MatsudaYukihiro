@@ -31,31 +31,42 @@ class CalendarView
     $html[] = '<th class="border">水</th>';
     $html[] = '<th class="border">木</th>';
     $html[] = '<th class="border">金</th>';
-    $html[] = '<th class="border">土</th>';
-    $html[] = '<th class="border">日</th>';
+    $html[] = '<th class="border day-sat">土</th>';
+    $html[] = '<th class="border day-sun">日</th>';
     $html[] = '</tr>';
     $html[] = '</thead>';
     $html[] = '<tbody>';
 
     $weeks = $this->getWeeks();
 
+    $today = Carbon::today()->format('Y-m-d');
+
     foreach ($weeks as $week) {
       $html[] = '<tr class="' . $week->getClassName() . '">';
       $days = $week->getDays();
       foreach ($days as $day) {
-        $startDay = $this->carbon->format("Y-m-01");
-        $toDay = $this->carbon->format("Y-m-d");
-        if ($startDay <= $day->everyDay() && $toDay >= $day->everyDay()) {
-          $html[] = '<td class="past-day border">';
-        } else {
-          $html[] = '<td class="border ' . $day->getClassName() . '">';
+        $dayClass = $day->getClassName();
+        $isPast = ($day->everyDay() <= $today);
+
+        $cellClass = 'border ' . $dayClass;
+        if ($isPast) {
+          $cellClass = 'past-day ' . $cellClass;
+          if ($dayClass === 'day-sat' || $dayClass === 'day-sun') {
+            $cellClass .= ' past-weekend';
+          }
         }
-        $html[] = $day->render();
+
+        $html[] = '<td class="' . $cellClass . '">';
+
+        $html[] = '<span class="day-number">' . $day->render() . '</span>';
+
         $html[] = $day->dayPartCounts($day->everyDay());
+
         $html[] = '</td>';
       }
       $html[] = '</tr>';
     }
+
     $html[] = '</tbody>';
     $html[] = '</table>';
     $html[] = '</div>';

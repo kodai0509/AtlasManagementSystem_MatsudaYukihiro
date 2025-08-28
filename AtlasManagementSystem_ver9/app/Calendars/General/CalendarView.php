@@ -33,13 +33,14 @@ class CalendarView
     $html[] = '<th>水</th>';
     $html[] = '<th>木</th>';
     $html[] = '<th>金</th>';
-    $html[] = '<th>土</th>';
-    $html[] = '<th>日</th>';
+    $html[] = '<th class="border day-sat">土</th>';
+    $html[] = '<th class="border day-sun">日</th>';
     $html[] = '</tr>';
     $html[] = '</thead>';
     $html[] = '<tbody>';
 
     $weeks = $this->getWeeks();
+    $today = now()->format('Y-m-d');
 
     foreach ($weeks as $week) {
       $html[] = '<tr class="' . $week->getClassName() . '">';
@@ -51,23 +52,25 @@ class CalendarView
           continue;
         }
 
-        $startDay = $this->carbon->copy()->format("Y-m-01");
-        $today = now()->format("Y-m-d");
+        $dayClass = $day->getClassName();
+        $isPast = ($day->everyDay() < $today);
 
-        $html[] = ($startDay <= $day->everyDay() && $today >= $day->everyDay())
-          ? '<td class="calendar-td past-day">'
-          : '<td class="calendar-td ' . $day->getClassName() . '">';
+        $cellClass = 'calendar-td ' . $dayClass;
+        if ($isPast) {
+          $cellClass = 'past-day ' . $cellClass;
+        }
 
-        $html[] = $day->render();
+        $html[] = '<td class="' . $cellClass . '">';
 
-        // 予約済み表示（複数部対応）
+        $html[] = '<span class="day-number">' . $day->render() . '</span>';
+
+        // 予約済み表示
         $reserves = $day->authReserveDate($day->everyDay());
 
         if ($reserves->isNotEmpty()) {
           foreach ($reserves as $reserve) {
             $partText = 'リモ' . $reserve->setting_part . '部';
-
-            if ($day->everyDay() < now()->format('Y-m-d')) {
+            if ($day->everyDay() < $today) {
               $html[] = '<p class="m-auto p-0 w-75 text-success" style="font-size:12px;">' . $partText . '</p>';
             } else {
               $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-btn" ' .
@@ -84,8 +87,7 @@ class CalendarView
             $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
           }
         } else {
-          // 未予約時の表示（セレクトボックス or 受付終了）
-          if ($day->everyDay() < now()->format('Y-m-d')) {
+          if ($day->everyDay() < $today) {
             $html[] = '<p class="m-auto p-0 w-75 text-secondary" style="font-size:12px;">受付終了</p>';
           } else {
             $html[] = $day->selectPart($day->everyDay());
@@ -121,36 +123,5 @@ class CalendarView
       $tmpDay->addDay(7);
     }
     return $weeks;
-  }
-
-  public function selectPart($date)
-  {
-    $html = [];
-    $parts = [1 => '1部', 2 => '2部', 3 => '3部'];
-
-    $html[] = "<select name='reserve_parts[{$date}]' class='border-primary' style='width:100px; border-radius:5px;' form='reserveParts'>";
-    $html[] = "<option value='' selected>選択してください</option>";
-
-    foreach ($parts as $part => $label) {
-      $reserveSetting = \App\Models\Calendars\ReserveSettings::where('setting_reserve', $date)
-        ->where('setting_part', $part)
-        ->first();
-
-      if (!$reserveSetting) {
-        continue;
-      }
-
-      $reservedCount = $reserveSetting->users()->count();
-      $remaining = $reserveSetting->limit_users - $reservedCount;
-
-      if ($remaining <= 0) {
-        continue;
-      }
-
-      $html[] = "<option value='{$part}'>{$label} (残り{$remaining}名)</option>";
-    }
-    $html[] = "</select>";
-
-    return implode('', $html);
   }
 }

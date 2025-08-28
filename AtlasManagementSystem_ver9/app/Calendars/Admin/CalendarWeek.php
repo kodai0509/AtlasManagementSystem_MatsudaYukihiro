@@ -28,14 +28,12 @@ class CalendarWeek
     $tmpDay = $startDay->copy();
 
     while ($tmpDay->lte($lastDay)) {
-      // 月が異なる日は空白セルとしてCalendarWeekBlankDayクラスを使う
       if ($tmpDay->month != $this->carbon->month) {
         $day = new CalendarWeekBlankDay($tmpDay->copy());
         $days[] = $day;
         $tmpDay->addDay(1);
         continue;
       }
-      // 現在の月の日付はCalendarWeekDayクラスで処理
       $day = new CalendarWeekDay($tmpDay->copy());
       $days[] = $day;
       $tmpDay->addDay(1);

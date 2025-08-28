@@ -65,7 +65,7 @@ li {
 
 /* スクール予約関連 */
 .day-blank {
-    background: #d3d3d3;
+    background: #d3d3d3 !important;
 }
 
 .day-sat {
@@ -76,47 +76,133 @@ li {
     color: #ff0000;
 }
 
-/* 過去日の背景をグレーに */
-.calendar-td.past-day {
-    background: #eee;
+/* 過去日の背景はすべてグレーに */
+.past-day {
+    background-color: #eee !important;
 }
 
 .calendar-td {
-    min-width: 100%;
+    min-width: auto;
+    min-height: 60px;
+    position: relative;
+    white-space: nowrap;
 }
 
-.calendar-wrapper {
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-.calendar-wrapper table {
-    border-collapse: collapse; /* ボーダーを重ねずスッキリ見せる */
-}
-
-.calendar-wrapper th,
-.calendar-wrapper td {
-    border: 1px solid #ccc;
-}
 .day_part {
     color: #494949;
     font-size: 12px;
 }
 
-.adjust-table {
-    width: 70% !important;
+/* 土日のカレンダーの色 */
+th.day-sat {
+    color: #0000ff !important;
 }
 
-.adjust-table td {
-    padding: 0 !important;
+th.day-sun {
+    color: #ff0000 !important;
 }
 
-.adjust-area p {
-    justify-content: space-around;
+table td.day-sat,
+table td.day-sat.past-day,
+table td.past-day.day-sat {
+    color: #0000ff !important;
+}
+
+table td.day-sun,
+table td.day-sun.past-day,
+table td.past-day.day-sun {
+    color: #ff0000 !important;
+}
+
+table td.day-sat .day,
+table td.day-sat.past-day .day,
+table td.past-day.day-sat .day {
+    color: #0000ff !important;
+}
+
+table td.day-sun .day,
+table td.day-sun.past-day .day,
+table td.past-day.day-sun .day {
+    color: #ff0000 !important;
+}
+
+table td.day-sat .day_part,
+table td.day-sat.past-day .day_part,
+table td.past-day.day-sat .day_part {
+    color: #0000ff !important;
+}
+
+table td.day-sun .day_part,
+table td.day-sun.past-day .day_part,
+table td.past-day.day-sun .day_part {
+    color: #ff0000 !important;
+}
+
+.calendar-wrapper {
+    overflow-x: visible;
+    -ms-overflow-style: auto;
+    scrollbar-width: auto;
+}
+.calendar-wrapper table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.calendar-wrapper th,
+.calendar-wrapper td {
+    border: 1px solid #ccc;
+    width: 14.28%;
+    padding: 8px 4px;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 予約のセルの調整 */
+.calendar-td button,
+.calendar-td select,
+.calendar-td input {
+    margin: 4px auto;
+    padding: 4px 20px;
+    width: 100% !important;
+}
+
+/* 予約確認 */
+.text-left p.day_part {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 2px 0 !important;
+    padding: 2px 10px 2px 15px !important;
+}
+
+/* 予約枠登録 */
+.adjust-area p.d-flex.m-0.p-0 {
+    justify-content: space-between !important;
+    margin: 3px 0 !important;
+    padding: 2px 10px 2px 15px !important;
+    align-items: center !important;
 }
 
 .adjust-table-btn {
-    width: 70%;
+    width: 100%;
+    padding-top: 20px;
+}
+
+/* 予約詳細(admin) */
+/* ヘッダー*/
+.reserve-table thead th {
+    background-color: #78c0e0 !important;
+    color: #ffffff !important;
+}
+
+.reserve-table tbody tr:nth-of-type(odd) td {
+    background-color: #ffffff !important;
+}
+
+.reserve-table tbody tr:nth-of-type(even) td {
+    background-color: #e0f3fb !important;
 }
 
 /* モーダル */
@@ -428,7 +514,6 @@ li {
     margin-bottom: 10px;
     width: 200px;
     height: 30px;
-    /* gap: 10px; */
 }
 
 .like_posts {
@@ -597,36 +682,7 @@ input.free_word {
     border-bottom: 2px solid #42badb;
 }
 
-/* 予約表 */
-/* admin */
-.past-day {
-    background-color: #eee !important;
-}
-.no-reserve {
-    color: red;
-    font-weight: bold;
-}
-
-.calendar-td {
-    vertical-align: top;
-    position: relative;
-    min-height: 80px;
-    overflow: visible;
-    white-space: nowrap;
-}
-
-.cancel-btn {
-    margin-top: 4px;
-    font-size: 12px;
-    width: 100%;
-    white-space: normal;
-    word-wrap: break-word;
-}
-
-.table tbody tr:nth-child(odd) td {
-    background-color: #fff !important;
-}
-
-.table tbody tr:nth-child(even) td {
-    background-color: #e5f6fa !important;
+/* 予約確認 */
+table td.day-blank {
+    background-color: #d3d3d3 !important;
 }
