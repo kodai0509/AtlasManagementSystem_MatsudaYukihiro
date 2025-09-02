@@ -1,5 +1,5 @@
 <x-sidebar>
-  <div class="vh-100 border position-relative">
+  <div class="vh-100  position-relative">
     <div class="profile_name">
       <span>{{ $user->over_name }}</span>
       <span>{{ $user->under_name }}さんのプロフィール</span>
