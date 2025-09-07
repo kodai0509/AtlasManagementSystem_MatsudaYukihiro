@@ -4,20 +4,21 @@
     <div class="w-100 vh-100 d-flex" style="align-items:center; justify-content:center;">
       <div class="w-30 vh-75 border p-3" style="background-color:white; position: relative;">
         <div class="register_form">
-          @error('over_name')
-          <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
-          @enderror
+
           <div class="d-flex mt-3" style="justify-content:space-between;">
             <div class="" style="width:200px">
+              @error('over_name')
+              <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
+              @enderror
               <label class="d-block m-0" style="font-size:13px">姓</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 over_name" name="over_name">
               </div>
             </div>
             <div class="" style="width:140px">
-              <!-- @error('under_name')
+              @error('under_name')
               <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
-              @enderror -->
+              @enderror
               <label class=" d-block m-0" style="font-size:13px">名</label>
               <div class="border-bottom border-primary" style="width:140px;">
                 <input type="text" style="width:140px;" class="border-0 under_name" name="under_name">
@@ -73,6 +74,9 @@
 
         <div class="mt-3" style="position: relative;">
           @error('old_month')
+          <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
+          @enderror
+          @error('birth_day')
           <div class="text-danger" style="font-size:12px;">{{ $message }}</div>
           @enderror
           <label class="d-block m-0" style="font-size:13px">生年月日</label>

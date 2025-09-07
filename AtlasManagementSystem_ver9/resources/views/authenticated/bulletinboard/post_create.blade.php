@@ -57,25 +57,37 @@
         @if (Auth::user()->role === 1)
         <!-- サブカテゴリー -->
         <div class="mt-5">
-          @if ($errors->has('sub_category_name'))
-          <span class="text-danger" style="white-space: nowrap;">{{ $errors->first('sub_category_name') }}</span>
-          @endif
-          <p class="m-0">サブカテゴリー</p>
-          <select name="main_category_id" class="category_input" form="subCategoryRequest">
-            <option selected disabled>----</option>
-            @foreach($main_categories as $main_category)
-            <option value="{{ $main_category->id }}">
-              {{ $main_category->main_category }}
-            </option>
-            @endforeach
-          </select>
-          <input type="text" name="sub_category_name" class="category_input" form="subCategoryRequest">
-          <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
           <form action="{{ route('sub.category.create') }}" method="post" id="subCategoryRequest">
             @csrf
+
+            @if ($errors->has('main_category_id'))
+            <span class="text-danger" style="white-space: nowrap;">
+              {{ $errors->first('main_category_id') }}
+            </span>
+            @endif
+            <p class="m-0">メインカテゴリー</p>
+            <select name="main_category_id" class="category_input">
+              <option selected disabled>----</option>
+              @foreach($main_categories as $main_category)
+              <option value="{{ $main_category->id }}">
+                {{ $main_category->main_category }}
+              </option>
+              @endforeach
+            </select>
+
+            @if ($errors->has('sub_category_name'))
+            <span class="text-danger" style="white-space: nowrap;">
+              {{ $errors->first('sub_category_name') }}
+            </span>
+            @endif
+            <p class="m-0">サブカテゴリー名</p>
+            <input type="text" name="sub_category_name" class="category_input">
+
+            <input type="submit" value="追加" class="w-100 btn btn-primary p-0">
           </form>
         </div>
         @endif
+
         <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
           @csrf
         </form>

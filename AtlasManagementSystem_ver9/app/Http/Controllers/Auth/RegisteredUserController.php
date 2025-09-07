@@ -42,26 +42,38 @@ class RegisteredUserController extends Controller
             'role' => ['required', Rule::in([1, 2, 3, 4])],
             'password' => ['required', 'string', 'confirmed', 'min:8', 'max:30'],
             'password_confirmation' => ['required', 'string', 'min:8', 'max:30'],
+            'birth_day' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $year = (int)$request->old_year;
+                    $month = (int)$request->old_month;
+                    $day = (int)$request->old_day;
+
+                    if (!checkdate($month, $day, $year)) {
+                        $fail('存在しない日付です。');
+                        return;
+                    }
+
+                    $birth_day = Carbon::createFromDate($year, $month, $day);
+                    $min_date = Carbon::create(2000, 1, 1);
+                    $max_date = Carbon::today();
+
+                    if ($birth_day->lt($min_date) || $birth_day->gt($max_date)) {
+                        $fail('生年月日は2000年1月1日から今日までの間で入力してください。');
+                    }
+                }
+            ],
         ]);
 
-        // 日付チェック
-        $year = (int)$request->input('old_year');
-        $month = (int)$request->input('old_month');
-        $day = (int)$request->input('old_day');
-
+        $year = (int)$request->old_year;
+        $month = (int)$request->old_month;
+        $day = (int)$request->old_day;
         if (!checkdate($month, $day, $year)) {
             return back()
-                ->withErrors(['old_day' => '存在しない日付です。'])
+                ->withErrors(['birth_day' => '存在しない日付です。'])
                 ->withInput();
         }
 
-        $birth_day = Carbon::createFromDate($request->old_year, $request->old_month, $request->old_day);
-        $min_date = Carbon::create(2000, 1, 1);
-        $max_date = Carbon::today();
-
-        if ($birth_day->lt($min_date) || $birth_day->gt($max_date)) {
-            return back()->withErrors(['birth_day' => '生年月日は2000年1月1日から今日までの間で入力してください。'])->withInput();
-        }
+        $birth_day = Carbon::createFromDate($year, $month, $day);
 
         // ユーザー作成
         DB::beginTransaction();

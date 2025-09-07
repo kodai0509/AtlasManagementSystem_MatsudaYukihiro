@@ -48,9 +48,9 @@ li {
 }
 
 .main-container {
-    /* width: 100%; */
+    width: 100%;
     display: flex;
-    align-items: stretch;
+    /* align-items: stretch; */
     min-height: 100vh;
 }
 
@@ -338,6 +338,17 @@ table td.past-day.day-sun .day_part {
 }
 
 /* 掲示板 コメント */
+.post_view {
+    margin-top: 5px;
+}
+
+.post_create_container {
+    display: flex;
+    flex-wrap: wrap; /* 子要素が収まらなければ下に回す */
+    gap: 20px; /* 子要素間の隙間 */
+    justify-content: flex-start; /* 左寄せ */
+    width: 100%;
+}
 .comment_container {
     background: #fff;
 }
@@ -381,6 +392,14 @@ table td.past-day.day-sun .day_part {
     border-radius: 10px;
 }
 
+.post_create_area,
+.category_area {
+    flex: 1 1 400px; /* 最小幅400pxで拡大可能 */
+    max-width: 600px; /* 画面サイズ次第で最大幅 */
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+}
 .category_box {
     border-radius: 5px;
     padding: 3px;
@@ -522,7 +541,7 @@ table td.past-day.day-sun .day_part {
 }
 
 .select_wrapper.open::after {
-    transform: translateY(-50%) rotate(-135deg); /* ▲ */
+    transform: translateY(-50%) rotate(-135deg);
 }
 
 /* 検索ボタン */
