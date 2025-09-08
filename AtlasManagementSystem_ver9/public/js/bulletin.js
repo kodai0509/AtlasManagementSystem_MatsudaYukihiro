@@ -1,9 +1,4 @@
 $(function () {
-    $(".main_categories").click(function () {
-        var category_id = $(this).attr("category_id");
-        $(".category_num" + category_id).slideToggle();
-    });
-
     // いいね
     $(document).on("click", ".like_btn", function (e) {
         e.preventDefault();
@@ -113,5 +108,18 @@ $(function () {
 
     $select.on("blur", function () {
         $wrapper.removeClass("open");
+    });
+    $(".main_categories").on("click", function (e) {
+        e.preventDefault(); // 念のため追加
+
+        var category_id = $(this).attr("category_id");
+
+        // 自分のサブカテゴリーだけ開閉
+        $(".category_num" + category_id)
+            .stop(true, true)
+            .slideToggle();
+
+        // 矢印切り替え
+        $(this).toggleClass("open");
     });
 });

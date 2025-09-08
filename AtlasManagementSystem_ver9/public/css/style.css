@@ -344,9 +344,9 @@ table td.past-day.day-sun .day_part {
 
 .post_create_container {
     display: flex;
-    flex-wrap: wrap; /* 子要素が収まらなければ下に回す */
-    gap: 20px; /* 子要素間の隙間 */
-    justify-content: flex-start; /* 左寄せ */
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
     width: 100%;
 }
 .comment_container {
@@ -394,8 +394,8 @@ table td.past-day.day-sun .day_part {
 
 .post_create_area,
 .category_area {
-    flex: 1 1 400px; /* 最小幅400pxで拡大可能 */
-    max-width: 600px; /* 画面サイズ次第で最大幅 */
+    flex: 1 1 400px;
+    max-width: 600px;
     background: #fff;
     border-radius: 10px;
     padding: 20px;
@@ -421,6 +421,30 @@ table td.past-day.day-sun .day_part {
 .sub_categories li input {
     list-style: none;
     cursor: pointer;
+}
+
+.main_categories {
+    position: relative;
+    display: block;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.main_categories::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid #333;
+    border-bottom: 2px solid #333;
+    transform: translateY(-50%) rotate(45deg); /* ▼下向き */
+    transition: transform 0.3s ease;
+}
+
+.main_categories.open::after {
+    transform: translateY(-50%) rotate(-135deg); /* ▲上向き */
 }
 
 /* カテゴリー追加 */
@@ -615,6 +639,9 @@ table td.past-day.day-sun .day_part {
     color: #000;
 }
 
+.sub_categories_list {
+    display: none;
+}
 .sub_categories_list li {
     list-style: none;
     width: 100%;
@@ -672,7 +699,7 @@ input.free_word {
     padding-right: 24px;
     cursor: pointer;
     border-bottom: 1px solid #999;
-    width: 250px;
+    width: 100%;
 }
 
 .search_conditions::after {

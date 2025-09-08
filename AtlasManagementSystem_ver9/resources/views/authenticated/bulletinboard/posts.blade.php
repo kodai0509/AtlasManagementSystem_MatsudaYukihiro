@@ -62,29 +62,25 @@
           </div>
         </form>
         <div class="category_select_area">
-          <label for="main_category">カテゴリー検索</label>
-          <div class="select_wrapper">
-            <select id="main_category" class="main_category_select">
-              <option value="" selected disabled>選択してください</option>
-              @foreach($categories as $category)
-              <option value="{{ $category->id }}">{{ $category->main_category }}</option>
-              @endforeach
-            </select>
-          </div>
-
+          <label>カテゴリー検索</label>
           @foreach($categories as $category)
-          <ul class="sub_categories_list" data-category-id="{{ $category->id }}" style="display: none;">
-            @foreach($category->subCategories as $sub)
-            <li>
-              <a href="{{ route('post.show', ['sub_category_id' => $sub->id]) }}"
-                class="sub_category_btn">
-                {{ $sub->sub_category }}
-              </a>
-            </li>
-            @endforeach
-          </ul>
+          <div class="conditions_wrapper">
+            <p class="main_categories m-0" category_id="{{ $category->id }}">
+              {{ $category->main_category }}
+            </p>
+            <div class="category_num{{ $category->id }} sub_categories_list">
+              <ul>
+                @foreach($category->subCategories as $sub)
+                <li>
+                  <span>{{ $sub->sub_category }}</span>
+                </li>
+                @endforeach
+              </ul>
+            </div>
+          </div>
           @endforeach
         </div>
+
       </div>
     </div>
   </div>
