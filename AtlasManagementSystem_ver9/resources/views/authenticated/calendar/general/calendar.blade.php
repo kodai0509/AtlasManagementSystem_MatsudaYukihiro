@@ -1,5 +1,5 @@
 <x-sidebar>
-  <div class="vh-100 pt-5" style="background:#ECF1F6;">
+  <div class="pt-5" style="background:#ECF1F6;">
     <form id="reserveParts" action="{{ route('reserveParts') }}" method="POST">
       @csrf
       <div class="w-75 m-auto pt-5 pb-5" style="background:#FFF;">

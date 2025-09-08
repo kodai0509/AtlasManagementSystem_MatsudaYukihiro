@@ -1,5 +1,5 @@
 <x-sidebar>
-  <div class="vh-100 d-flex" style="align-items:center; justify-content:center;">
+  <div class="d-flex">
     <div class="w-50 m-auto h-75">
       <p><span>{{ $date }}</span><span class="ml-3">{{ $part }}部</span></p>
       <div class="h-75 border">
