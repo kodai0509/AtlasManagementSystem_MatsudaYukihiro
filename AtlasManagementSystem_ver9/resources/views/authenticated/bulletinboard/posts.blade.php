@@ -72,7 +72,10 @@
               <ul>
                 @foreach($category->subCategories as $sub)
                 <li>
-                  <span>{{ $sub->sub_category }}</span>
+                  <a href="{{ route('post.show', ['sub_category_id' => $sub->id]) }}"
+                    style="cursor:pointer; text-decoration:none; color:#007bff;">
+                    {{ $sub->sub_category }}
+                  </a>
                 </li>
                 @endforeach
               </ul>
@@ -80,7 +83,6 @@
           </div>
           @endforeach
         </div>
-
       </div>
     </div>
   </div>
