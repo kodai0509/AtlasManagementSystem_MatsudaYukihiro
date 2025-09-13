@@ -40,18 +40,23 @@ li {
 /* サイドバー */
 .sidebar {
     width: 200px;
-    height: auto;
-    padding-right: 10px;
-    min-height: 165vh;
     background-color: #03aad2;
+    height: 100vh; /* サイドバーを画面高に固定 */
+    overflow: auto; /* 必要に応じてスクロール */
+    position: fixed;
+    top: 0;
     font-weight: bold;
 }
 
 .main-container {
-    width: 100%;
+    margin-left: 200px;
+    flex: 1;
     display: flex;
-    /* align-items: stretch; */
+    flex-direction: column;
     min-height: 100vh;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .sidebar a {
@@ -212,6 +217,10 @@ table td.past-day.day-sun .day_part {
 
 /* 予約詳細(admin) */
 /* ヘッダー*/
+.reserve-table {
+    width: 100%;
+    table-layout: fixed;
+}
 .reserve-table thead th {
     background-color: #78c0e0 !important;
     color: #ffffff !important;

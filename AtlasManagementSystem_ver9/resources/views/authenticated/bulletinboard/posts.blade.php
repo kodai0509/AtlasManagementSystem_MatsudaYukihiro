@@ -1,8 +1,8 @@
 <x-sidebar>
-  <div class="board_area w-100 border d-flex">
+  <div class="board_area w-100 d-flex">
     <div class="post_view w-75 mt-5">
       @foreach($posts as $post)
-      <div class="post_area border w-75 m-auto p-3">
+      <div class="post_area w-75 m-auto p-3">
         <p><span>{{ $post->user->over_name }}</span><span class="ml-3">{{ $post->user->under_name }}</span>さん</p>
 
         <!-- 投稿タイトル -->

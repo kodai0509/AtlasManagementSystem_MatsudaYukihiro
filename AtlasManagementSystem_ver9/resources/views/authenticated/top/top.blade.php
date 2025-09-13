@@ -1,6 +1,6 @@
 <x-sidebar>
   <div class="w-75">
-    <div class="top_area w-75 pt-0">
+    <div class="top_area w-75 pt-0" style="height:auto;">
       <div class="my-profile">
         <p>マイページ</p>
       </div>
