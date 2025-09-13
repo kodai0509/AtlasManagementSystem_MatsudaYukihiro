@@ -70,11 +70,7 @@ li {
     text-decoration: none;
 }
 
-/* トップページ */
-.user_status {
-    border-radius: 10px;
-    background: #fff;
-}
+/* ログインユーザー詳細ページ */
 
 /* スクール予約関連 */
 .day-blank {
@@ -472,11 +468,10 @@ table td.past-day.day-sun .day_part {
 }
 
 .profile_name {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin-bottom: 40px;
-    /* font-weight: bold; */
+    position: static;
+    padding-top: 0px;
+    margin-left: 0px;
+    margin-bottom: 50px;
     white-space: nowrap;
     color: #000;
 }
@@ -658,6 +653,18 @@ table td.past-day.day-sun .day_part {
 
 .sub_category_btn:hover {
     color: #03aad2;
+}
+
+/* ログインユーザーのトップページ */
+.my-profile {
+    padding-top: 10px;
+    margin-left: 0;
+}
+/* ユーザー詳細ページ */
+.user_status {
+    border-radius: 10px;
+    background: #fff;
+    margin-left: 100px;
 }
 
 /* ユーザー検索 */
